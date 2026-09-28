@@ -39,9 +39,10 @@ else
     install_bun
     install_angular
     install_git_lfs
+    install_starship
 
     # 4. Configuration Phase
-    copy_theme
+    setup_starship
     copy_modular_configs
     generate_zshrc
     setup_local_config

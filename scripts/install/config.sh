@@ -1,19 +1,20 @@
 #!/bin/bash
 
-copy_theme() {
-    local THEME_DEST="$ZSH_CUSTOM/themes/leonardo.zsh-theme"
-    if [ -f "$THEME_DEST" ]; then
-        log_info "Theme is already installed."
-        SUMMARY_SUCCESS+=("Theme")
-        return
+setup_starship() {
+    echo "🚀 Setting up Starship prompt configuration..."
+    local STARSHIP_CONFIG_DIR="$HOME/.config"
+    mkdir -p "$STARSHIP_CONFIG_DIR"
+    if cp "$REPO_DIR/config/starship.toml" "$STARSHIP_CONFIG_DIR/starship.toml"; then
+        SUMMARY_SUCCESS+=("Starship Config (Gruvbox Rainbow)")
+    else
+        SUMMARY_FAILED+=("Starship Config (copy failed)")
     fi
 
-    echo "🎨 Copying theme..."
-    mkdir -p "$ZSH_CUSTOM/themes"
-    if cp "$REPO_DIR/themes/leonardo.zsh-theme" "$THEME_DEST"; then
-        SUMMARY_SUCCESS+=("Theme")
-    else
-        SUMMARY_FAILED+=("Theme (copy failed)")
+    # Clean up deprecated legacy theme file if it exists
+    local OLD_THEME="$ZSH_CUSTOM/themes/leonardo.zsh-theme"
+    if [ -f "$OLD_THEME" ]; then
+        echo "   🧹 Removing legacy theme: $OLD_THEME"
+        rm -f "$OLD_THEME"
     fi
 }
 

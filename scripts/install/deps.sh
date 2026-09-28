@@ -220,3 +220,26 @@ install_git_lfs() {
     fi
 }
 
+install_starship() {
+    if command -v starship &> /dev/null; then
+        log_info "Starship is already installed."
+        SUMMARY_SUCCESS+=("Starship")
+        return
+    fi
+
+    echo "🚀 Installing Starship prompt..."
+    if command -v brew &> /dev/null; then
+        if brew install starship; then
+            SUMMARY_SUCCESS+=("Starship")
+            return
+        fi
+    fi
+
+    if curl -sS https://starship.rs/install.sh | sh -s -- -y; then
+        SUMMARY_SUCCESS+=("Starship")
+    else
+        SUMMARY_FAILED+=("Starship (installation failed)")
+    fi
+}
+
+

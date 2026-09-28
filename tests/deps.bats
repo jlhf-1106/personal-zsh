@@ -77,3 +77,27 @@ setup() {
     assert_output --partial "git-lfs command not found"
 }
 
+@test "install_starship should skip if already installed" {
+    mock_command "starship" "mock starship"
+
+    run install_starship
+    assert_success
+    assert_output --partial "Starship is already installed"
+}
+
+@test "install_starship should install when missing" {
+    mock_command "brew" "mock brew"
+
+    command() {
+        if [ "$1" = "-v" ] && [ "$2" = "starship" ]; then
+            return 1
+        fi
+        builtin command "$@"
+    }
+
+    run install_starship
+    assert_success
+    assert_output --partial "Installing Starship prompt"
+}
+
+
