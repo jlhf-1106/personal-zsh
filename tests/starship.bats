@@ -78,6 +78,23 @@ except Exception as e:
     fi
 }
 
+@test "config/starship.toml does not contain unsupported jj modules" {
+    run grep "\[jj_bookmark\]" "$REPO_DIR/config/starship.toml"
+    assert_failure
+
+    run grep "\[jj_status\]" "$REPO_DIR/config/starship.toml"
+    assert_failure
+}
+
+@test "config/starship.toml produces no warnings when evaluated by starship" {
+    if command -v starship &>/dev/null; then
+        run env TERM=xterm-256color STARSHIP_CONFIG="$REPO_DIR/config/starship.toml" starship prompt --continuation
+        assert_success
+        refute_output --partial "WARN"
+    fi
+}
+
+
 # ═══════════════════════════════════════════════════════
 # Setup & Deployment Tests
 # ═══════════════════════════════════════════════════════
