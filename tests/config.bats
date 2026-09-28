@@ -7,7 +7,6 @@ setup() {
     
     # Use a mock REPO_DIR so tests never touch real repo files
     export REPO_DIR="$BATS_TMPDIR/mock_repo"
-    mkdir -p "$REPO_DIR/themes"
     mkdir -p "$REPO_DIR/scripts/install"
     
     # Copy only the files needed by the scripts under test
@@ -37,12 +36,24 @@ teardown() {
     rm -rf "$BATS_TMPDIR/mock_repo"
 }
 
-@test "copy_theme should copy the theme file" {
-    echo "test theme" > "$REPO_DIR/themes/leonardo.zsh-theme"
+@test "setup_starship should copy starship.toml to ~/.config" {
+    mkdir -p "$REPO_DIR/config"
+    echo 'format = "$all"' > "$REPO_DIR/config/starship.toml"
     
-    run copy_theme
+    run setup_starship
     assert_success
-    assert_file_exists "$ZSH_CUSTOM/themes/leonardo.zsh-theme"
+    assert_file_exists "$HOME/.config/starship.toml"
+}
+
+@test "setup_starship should remove legacy leonardo.zsh-theme if present" {
+    mkdir -p "$REPO_DIR/config"
+    echo 'format = "$all"' > "$REPO_DIR/config/starship.toml"
+    mkdir -p "$ZSH_CUSTOM/themes"
+    touch "$ZSH_CUSTOM/themes/leonardo.zsh-theme"
+
+    run setup_starship
+    assert_success
+    assert_file_not_exists "$ZSH_CUSTOM/themes/leonardo.zsh-theme"
 }
 
 @test "setup_local_config should create .zshrc.local" {

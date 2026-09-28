@@ -1,6 +1,6 @@
 # Personal Zsh Configuration
 
-This repository contains a portable, modular Zsh configuration based on **Oh My Zsh** and the **Powerlevel10k**-inspired custom theme `leonardo`.
+This repository contains a portable, modular Zsh configuration based on **Oh My Zsh** and the fast, cross-shell **Starship** prompt with the **Gruvbox Rainbow** preset.
 
 ## Features
 - **Granular Installation**: Choose exactly which tools and plugins to install (Git, Git LFS, GitHub CLI, Node, pnpm, Bun, Docker, AWS, Azure, Angular, Go, Maven, etc.) independently via an interactive menu.
@@ -8,7 +8,7 @@ This repository contains a portable, modular Zsh configuration based on **Oh My 
 - **Homebrew Integration**: Automatically installs missing CLI tools using Homebrew for a seamless setup.
 - **Modular Structure**: Configuration is split into specialized subdirectories. Only the configurations for selected features are deployed.
 - **Dynamic Plugin Management**: Automatically generates the Oh My Zsh plugin list based on your preferences.
-- **Custom Theme**: `leonardo.zsh-theme` (Customized robbyrussell with dynamic OS icons and inline git diff stats — yellow file document icon `󰈙` and yellow line number icon ``).
+- **Starship Prompt**: Fast, asynchronous [Starship](https://starship.rs) prompt featuring the powerline-style **Gruvbox Rainbow** preset with contextual segments for OS, directory, Git status, language runtimes, containers, and timestamps.
 - **Java Management**: Integrated [SDKMAN!](https://sdkman.io/) with automatic version switching.
 - **Utility Tools**: Includes handy utilities like **Extract** (one command to unzip anything) and **Warp Directory (wd)** for quick navigation.
 
@@ -151,7 +151,7 @@ The pipeline tests across:
 - `config/`: 
     - `core/`: Base system configurations (OS detection, history, aliases).
     - `plugins/`: Tool-specific and functional configurations (Brew, Docker, SDKMAN, etc.).
-- `themes/`: Custom Zsh themes copied to Oh My Zsh custom themes folder.
+    - `starship.toml`: Starship configuration using the Gruvbox Rainbow preset.
 
 ## Utilities
 

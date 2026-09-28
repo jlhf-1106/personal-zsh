@@ -5,7 +5,7 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 ## Core Project Context
 - **Purpose**: Portable, modular Zsh configuration for Linux, macOS, and WSL.
 - **Base**: Oh My Zsh.
-- **Custom Theme**: `leonardo.zsh-theme` (requires `OS_ICON` env var; includes git stats with yellow document icon `󰈙` and yellow lines icon ``).
+- **Prompt**: Fast, cross-shell [Starship](https://starship.rs) prompt using the **Gruvbox Rainbow** preset (`config/starship.toml` deployed to `~/.config/starship.toml`).
 - **Package Managers & Tools**: 
     - **SDKMAN!** (`config/sdkman.zsh`): Java version management.
     - **FNM** (`config/fnm.zsh`): Fast Node Manager.
@@ -20,8 +20,8 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 - **Modular Logic**: The installer is organized into scripts in `scripts/install/`:
     - `common.sh`: Shared variables and logging.
     - `features.sh`: Interactive feature selection and preference loading.
-    - `deps.sh`: Installation of Homebrew, OMZ, and custom plugins.
-    - `config.sh`: Deployment of themes, configs, and fonts.
+    - `deps.sh`: Installation of Homebrew, OMZ, Starship, and custom plugins.
+    - `config.sh`: Deployment of Starship configuration, modular configs, and fonts.
 - **Preferences**: Persists preferences in `.zsh_plugins.env`.
 
 ### PATH Migration
@@ -53,8 +53,10 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 - Auto-installs Java 21 (`21-tem`) upon SDKMAN! installation.
 - Use `.sdkmanrc` for project-specific versions.
 
-### Theming
-- Icons are dynamic based on the `OS_ICON` variable defined in `config/core/00-os.zsh`.
+### Theming & Prompt
+- Prompt is managed via **Starship** using the **Gruvbox Rainbow** preset (`config/starship.toml`).
+- OMZ themes are disabled (`ZSH_THEME=""` in `zshrc.template`).
+- Syntax highlighting styles are defined in `config/plugins/zsh-plugins.zsh`.
 
 ## Tool-Specific Guidance
 

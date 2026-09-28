@@ -32,5 +32,21 @@ if command -v fzf &> /dev/null; then
   fi
 fi
 
-# zsh-syntax-highlighting
-# ...
+# zsh-syntax-highlighting colors:
+# - default typed text in soft white
+# - valid command in soft green
+# - invalid command in soft red
+# - All states use 'none' attribute to ensure uniform font thickness
+typeset -gA ZSH_HIGHLIGHT_STYLES 2>/dev/null || true
+ZSH_HIGHLIGHT_STYLES[default]='none,fg=252'
+ZSH_HIGHLIGHT_STYLES[command]='none,fg=114'
+ZSH_HIGHLIGHT_STYLES[path]='none,fg=114'
+ZSH_HIGHLIGHT_STYLES[path_prefix]='none,fg=252'
+ZSH_HIGHLIGHT_STYLES[path_pathseparator]='none,fg=252'
+ZSH_HIGHLIGHT_STYLES[alias]='none,fg=114'
+ZSH_HIGHLIGHT_STYLES[builtin]='none,fg=114'
+ZSH_HIGHLIGHT_STYLES[function]='none,fg=114'
+ZSH_HIGHLIGHT_STYLES[hashed-command]='none,fg=114'
+ZSH_HIGHLIGHT_STYLES[precommand]='none,fg=114'
+ZSH_HIGHLIGHT_STYLES[commandseparator]='none,fg=252'
+ZSH_HIGHLIGHT_STYLES[unknown-token]='none,fg=210'
