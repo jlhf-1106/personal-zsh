@@ -69,7 +69,7 @@ teardown() {
     run generate_zshrc
     assert_success
     assert_file_exists "$HOME/.zshrc"
-    assert_file_contains "$HOME/.zshrc" "plugins=(history git)"
+    assert_file_contains "$HOME/.zshrc" "plugins=(history git sudo)"
 }
 
 @test "generate_zshrc should back up an existing .zshrc before replacing it" {
@@ -92,7 +92,7 @@ teardown() {
     assert_success
     assert_file_contains "$HOME/dotfiles/zshrc" "dotfiles config"
     assert_link_exists "$CONFIG_DEST"/backups/.zshrc.bak.*
-    assert_file_contains "$HOME/.zshrc" "plugins=(history git)"
+    assert_file_contains "$HOME/.zshrc" "plugins=(history git sudo)"
 }
 
 @test "copy_modular_configs should keep backups and drop deselected configs" {

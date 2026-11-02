@@ -60,6 +60,7 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 - Prompt is managed via **Starship** using the **Gruvbox Rainbow** preset (`config/starship.toml`).
 - OMZ themes are disabled (`ZSH_THEME=""` in `zshrc.template`).
 - Syntax highlighting styles are defined in `config/plugins/zsh-plugins.zsh`.
+- Esc Esc (prepend/remove `sudo`) comes from the OMZ `sudo` plugin, always enabled in `common.sh`. Do not bind plain keys like space.
 
 ## Agent Guidelines (all tools)
 - **Search first**: Look for the relevant modular file in `config/` before suggesting changes.
