@@ -32,7 +32,8 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 - **Dry-run by default**: Running without flags shows detected lines without modifying anything. Use `--apply` to execute.
 - **Stateful parser**: Tracks `if`/`for`/`while`/`case` block depth and `{ }` brace depth to skip lines inside conditionals and functions.
 - **Portability**: Uses `awk` (not `sed -i`) for line deletion to work on both macOS (BSD) and Linux (GNU).
-- **Test harness**: `tests/migrate_path.bats` validates the script via Bats (39 tests covering dry-run, apply, exclusion rules, backups, idempotency, and edge cases).
+- **Symlinks**: Rewrites `~/.zshrc` with `cat > file` (not `mv`) so a symlinked `.zshrc` stays a link.
+- **Test harness**: `tests/migrate_path.bats` validates the script via Bats (41 tests covering dry-run, apply, exclusion rules, backups, idempotency, symlinked `.zshrc`, and edge cases).
 
 ### Modular Configuration
 - **Structure**: The `config/` directory is organized into subdirectories:
