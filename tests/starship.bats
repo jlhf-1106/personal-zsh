@@ -56,26 +56,9 @@ teardown() {
 }
 
 @test "config/starship.toml contains valid TOML syntax" {
-    # Check syntax using python3 tomllib if available
-    if command -v python3 &>/dev/null; then
-        run python3 -c "
-try:
-    import tomllib
-    with open('$REPO_DIR/config/starship.toml', 'rb') as f:
-        tomllib.load(f)
-    print('VALID')
-except Exception as e:
-    import sys
-    # If tomllib is not available (python < 3.11), fallback to basic syntax test
-    if 'No module named' in str(e):
-        print('VALID')
-    else:
-        print(f'INVALID: {e}', file=sys.stderr)
-        sys.exit(1)
-"
-        assert_success
-        assert_output "VALID"
-    fi
+    python3 -c "import tomllib" 2>/dev/null || skip "python3 with tomllib (3.11+) not available"
+    run python3 -c "import sys, tomllib; tomllib.load(open(sys.argv[1], 'rb'))" "$REPO_DIR/config/starship.toml"
+    assert_success
 }
 
 @test "config/starship.toml does not contain unsupported jj modules" {
@@ -87,11 +70,10 @@ except Exception as e:
 }
 
 @test "config/starship.toml produces no warnings when evaluated by starship" {
-    if command -v starship &>/dev/null; then
-        run env TERM=xterm-256color STARSHIP_CONFIG="$REPO_DIR/config/starship.toml" starship prompt --continuation
-        assert_success
-        refute_output --partial "WARN"
-    fi
+    command -v starship &>/dev/null || skip "starship not installed"
+    run env TERM=xterm-256color STARSHIP_CONFIG="$REPO_DIR/config/starship.toml" starship prompt --continuation
+    assert_success
+    refute_output --partial "WARN"
 }
 
 
