@@ -101,3 +101,19 @@ setup() {
     assert_output --partial "git-lfs.zsh"
 }
 
+
+@test "select_features with AWS should add fzf once (awsp needs it)" {
+    for f in AUTOSUGGEST HIGHLIGHT GH FNM PNPM BUN DOCKER DOCKER_COMPOSE SDKMAN MAVEN AZURE NG GOLANG EXTRACT WD GIT_LFS; do
+        export "ENABLE_$f=false"
+    done
+    export ENABLE_AWS=true ENABLE_FZF=true
+    mock_command "git" "mock git"
+
+    select_features > /dev/null || true
+    [[ " $BREW_DEPS " == *" awscli "* ]]
+    [ "$(tr ' ' '\n' <<< "$BREW_DEPS" | grep -cx fzf)" -eq 1 ]
+
+    export ENABLE_FZF=false BREW_DEPS=""
+    select_features > /dev/null || true
+    [[ " $BREW_DEPS " == *" fzf "* ]]
+}
