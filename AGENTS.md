@@ -20,7 +20,8 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 - **Modular Logic**: The installer is organized into scripts in `scripts/install/`:
     - `common.sh`: Shared variables and logging.
     - `features.sh`: Interactive feature selection and preference loading.
-    - `deps.sh`: Installation of Homebrew, OMZ, Starship, and custom plugins.
+    - `deps.sh`: Installation of Homebrew, OMZ, Starship, and custom plugins. OMZ is installed with `ZSH="$HOME/.oh-my-zsh" KEEP_ZSHRC=yes` so it never touches `.zshrc`.
+- **Guards** (`install.sh`): exits if `ZDOTDIR` is set to anything but `$HOME`; skips `generate_zshrc` when `~/.oh-my-zsh/oh-my-zsh.sh` is missing.
     - `config.sh`: Deployment of Starship configuration, modular configs, and fonts. `generate_zshrc` always moves the old `~/.zshrc` (file or symlink) to `~/.zsh_config/backups/` first.
 - **Preferences**: Persists preferences in `.zsh_plugins.env` (git-ignored, per machine; never commit it).
 
