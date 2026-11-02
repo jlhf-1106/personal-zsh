@@ -43,6 +43,7 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 - **Dynamic Plugins**: `zshrc.template` contains a `_DYNAMIC_PLUGINS_` placeholder that is replaced during installation with the list of Oh My Zsh plugins corresponding to the selected features.
 - **Rule**: Never modify `~/.zshrc` directly; add/edit files in `config/`.
 - **Rule**: Each tool or logical set **MUST** have its own `.zsh` file.
+- **Rule**: Do not add a `.zsh` file for something an enabled OMZ plugin already does (completion, aliases, functions). Never run slow commands (e.g. `ng completion script`, `docker ...`) at shell startup.
 
 ## Development Conventions
 
