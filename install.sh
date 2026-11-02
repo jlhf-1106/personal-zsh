@@ -30,7 +30,6 @@ fi
 
 # 2. Preferences & Selection
 load_preferences
-verify_mandatory_deps
 select_features
 
 # 3. Installation Phase
