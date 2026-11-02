@@ -21,7 +21,7 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
     - `common.sh`: Shared variables and logging.
     - `features.sh`: Interactive feature selection and preference loading.
     - `deps.sh`: Installation of Homebrew, OMZ, Starship, and custom plugins.
-    - `config.sh`: Deployment of Starship configuration, modular configs, and fonts.
+    - `config.sh`: Deployment of Starship configuration, modular configs, and fonts. `generate_zshrc` always moves the old `~/.zshrc` (file or symlink) to `~/.zsh_config/backups/` first.
 - **Preferences**: Persists preferences in `.zsh_plugins.env` (git-ignored, per machine; never commit it).
 
 ### PATH Migration

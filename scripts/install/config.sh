@@ -40,7 +40,8 @@ generate_zshrc() {
     echo "📝 Generating .zshrc..."
     local BACKUP_DIR="$CONFIG_DEST/backups"
     mkdir -p "$BACKUP_DIR"
-    if [ -f "$HOME/.zshrc" ] && [ ! -L "$HOME/.zshrc" ]; then
+    # Move symlinks too: cp would write through the link into its target.
+    if [ -e "$HOME/.zshrc" ] || [ -L "$HOME/.zshrc" ]; then
         local TIMESTAMP=$(date +%Y%m%d_%H%M%S)
         mv "$HOME/.zshrc" "$BACKUP_DIR/.zshrc.bak.$TIMESTAMP"
     fi
