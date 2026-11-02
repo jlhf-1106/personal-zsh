@@ -6,7 +6,6 @@ HISTFILE=$HOME/.zsh_history
 # History Options
 setopt APPEND_HISTORY          # Append to history file instead of overwriting
 setopt SHARE_HISTORY           # Share history between different sessions
-setopt HIST_IGNORE_DUPS        # Do not record an event that was just recorded
 setopt HIST_IGNORE_ALL_DUPS    # Delete old recorded event if new event is a duplicate
 setopt HIST_REDUCE_BLANKS      # Remove superfluous blanks from each command line
 setopt HIST_IGNORE_SPACE       # Do not record an event starting with a space
