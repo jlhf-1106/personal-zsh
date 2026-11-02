@@ -15,10 +15,10 @@ This repository contains a portable, modular Zsh configuration based on **Oh My 
 
 ## Mandatory Dependencies
 
-Some features have mandatory dependencies for security or functional reasons:
+Some features pull in another tool automatically:
 
-- **Angular CLI**: Requires global installation via `pnpm`. You must agree to this during the installation process.
-- **Docker**: Enabling Docker support requires the installation of `Docker Compose`.
+- **Angular CLI**: Installed globally with `pnpm`. If pnpm is not selected or installed, the installer adds it.
+- **Docker**: When Docker is selected (or already installed), the installer also offers `Docker Compose`.
 
 ## Java & SDKMAN!
 

@@ -32,26 +32,6 @@ confirm_feature() {
     esac
 }
 
-verify_mandatory_deps() {
-    if [[ -z "$ENABLE_NG" ]]; then
-        echo "⚠️  Note: Angular CLI requires global installation via pnpm (mandatory for security)."
-        read -p "❓ Do you agree to use pnpm if you choose to install Angular? [Y/n]: " pnpm_agree
-        if [[ "$pnpm_agree" =~ ^[nN] ]]; then
-            echo "❌ Aborting installation: pnpm requirement for Angular not accepted."
-            exit 1
-        fi
-    fi
-
-    if [[ -z "$ENABLE_DOCKER" ]]; then
-        echo "⚠️  Note: Docker setup requires installing Docker Compose as a mandatory dependency."
-        read -p "❓ Do you agree to install Docker Compose if you choose to install Docker? [Y/n]: " docker_agree
-        if [[ "$docker_agree" =~ ^[nN] ]]; then
-            echo "❌ Aborting installation: Docker Compose requirement for Docker not accepted."
-            exit 1
-        fi
-    fi
-}
-
 select_features() {
     echo "🔍 Feature selection..."
     
