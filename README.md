@@ -130,22 +130,17 @@ Tests are managed via `pnpm`. To run the full test suite:
 
 ### Continuous Integration
 
-A GitHub Actions pipeline is configured to automatically run the test suite on every push and pull request. **Only the tests related to the files you changed are executed**, keeping CI fast and focused.
+A GitHub Actions pipeline runs on every push to `main` and on every pull request (including stacked PRs that target another PR branch). Each run:
 
-| Source changed | Test executed |
-|---|---|
-| `scripts/install/common.sh` | `tests/common.bats` |
-| `scripts/install/features.sh` | `tests/features.bats` |
-| `scripts/install/deps.sh` | `tests/deps.bats` |
-| `scripts/install/config.sh` | `tests/config.bats` |
-| `install.sh` | `tests/install.bats` |
-| `scripts/migrate_path.sh` | `tests/migrate_path.bats` |
-| Test helpers, `package.json`, or CI config | **All tests** |
+1. Checks syntax with `zsh -n` (all `config/**/*.zsh` and `zshrc.template`) and `bash -n` (installer scripts).
+2. Runs the **full** Bats suite with `pnpm test`. It takes seconds, so there is no per-file filtering.
 
 The pipeline tests across:
 - **Ubuntu** (Latest)
 - **macOS** (Latest)
 - **Windows** (via **WSL** Ubuntu-22.04)
+
+CI uses Node.js 22 (required by the `@caveman-ai/cli` devDependency).
 
 ## Structure
 - `zshrc.template`: The main entry point copied to `~/.zshrc`.
