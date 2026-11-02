@@ -84,8 +84,8 @@ select_features() {
     confirm_feature "AWS" "AWS CLI" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS aws"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES aws.zsh"; BREW_DEPS="$BREW_DEPS awscli"; }
     confirm_feature "AZURE" "Azure CLI" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS azure"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES azure.zsh"; BREW_DEPS="$BREW_DEPS azure-cli"; }
     if confirm_feature "NG" "Angular CLI (ng)"; then
+        # The OMZ ng plugin provides lazy completion (runs ng only on Tab).
         SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS ng"
-        SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES ng.zsh"
         INSTALL_ANGULAR=true
         
         if [[ "$ENABLE_PNPM" != "true" ]] && ! command -v pnpm &> /dev/null; then
