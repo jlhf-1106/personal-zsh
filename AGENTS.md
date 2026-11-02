@@ -63,7 +63,7 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 ## Agent Guidelines (all tools)
 - **Search first**: Look for the relevant modular file in `config/` before suggesting changes.
 - **Source of truth**: `zshrc.template` is the source of truth for the linked `~/.zshrc`.
-- **Verification**: Check shell syntax with `zsh -n <file>` (or `bash -n` for `.sh` scripts) and run the Bats suite with `pnpm test`.
+- **Verification**: Check shell syntax with `zsh -n <file>` (or `bash -n` for `.sh` scripts) and run the Bats suite with `pnpm test`. CI (`.github/workflows/test.yml`) runs the same syntax checks and the full suite on Ubuntu, macOS and WSL, Node 22, for every PR.
 - **Snippets**: Be mindful of the modular nature of the config when providing code snippets.
 - **Paths**: Use absolute paths or paths relative to the project root when suggesting commands.
 
