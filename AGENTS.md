@@ -12,6 +12,7 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
     - **Bun** (`config/bun.zsh`): JavaScript runtime and manager.
     - **Homebrew** (`config/brew.zsh`): Package manager for macOS and Linux.
     - **Git LFS** (`config/plugins/git-lfs.zsh`): Git Large File Storage configuration and aliases.
+    - **Docker Compose** (`config/plugins/docker-compose.zsh`): `dc` alias; picks `docker-compose` or `docker compose` from `$commands` without running docker.
 
 ## Key Workflows
 
