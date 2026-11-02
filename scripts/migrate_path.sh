@@ -250,7 +250,9 @@ awk -v lines="$LINE_NUMBERS" '
   !(FNR in skip) { print }
 ' "$ZSHRC" > "$TMP_ZSHRC"
 
-mv "$TMP_ZSHRC" "$ZSHRC"
+# Write through the file instead of mv, so a symlinked ~/.zshrc stays a link.
+cat "$TMP_ZSHRC" > "$ZSHRC"
+rm -f "$TMP_ZSHRC"
 
 # ---- Append backup note to .zshrc if not present ----
 BACKUP_NOTE="# Backups of previous configurations are stored in ~/.zsh_config/backups/"

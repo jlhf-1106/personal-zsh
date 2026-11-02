@@ -201,6 +201,7 @@ The script:
 - **Skips lines inside conditionals**, functions, multiline arrays, and comments.
 - **Appends `typeset -U path`** to the migrated block for automatic deduplication.
 - **Works on both macOS and Linux** (uses `awk`, not `sed -i`).
+- **Keeps a symlinked `~/.zshrc` a symlink** (writes through the link, e.g. into your dotfiles repo).
 
 ## Nerd Font Symbols
 
