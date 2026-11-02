@@ -33,7 +33,7 @@ setup() {
 }
 
 teardown() {
-    rm -rf "$BATS_TMPDIR/mock_repo"
+    rm -rf "$BATS_TMPDIR/mock_repo" "$BATS_TMPDIR/home"
 }
 
 @test "setup_starship should copy starship.toml to ~/.config" {
@@ -69,5 +69,28 @@ teardown() {
     run generate_zshrc
     assert_success
     assert_file_exists "$HOME/.zshrc"
+    assert_file_contains "$HOME/.zshrc" "plugins=(history git)"
+}
+
+@test "generate_zshrc should back up an existing .zshrc before replacing it" {
+    echo "plugins=(_DYNAMIC_PLUGINS_)" > "$REPO_DIR/zshrc.template"
+    echo "my old config" > "$HOME/.zshrc"
+
+    run generate_zshrc
+    assert_success
+    run cat "$CONFIG_DEST"/backups/.zshrc.bak.*
+    assert_output "my old config"
+}
+
+@test "generate_zshrc should move a symlinked .zshrc aside without touching its target" {
+    echo "plugins=(_DYNAMIC_PLUGINS_)" > "$REPO_DIR/zshrc.template"
+    mkdir -p "$HOME/dotfiles"
+    echo "dotfiles config" > "$HOME/dotfiles/zshrc"
+    ln -s "$HOME/dotfiles/zshrc" "$HOME/.zshrc"
+
+    run generate_zshrc
+    assert_success
+    assert_file_contains "$HOME/dotfiles/zshrc" "dotfiles config"
+    assert_link_exists "$CONFIG_DEST"/backups/.zshrc.bak.*
     assert_file_contains "$HOME/.zshrc" "plugins=(history git)"
 }

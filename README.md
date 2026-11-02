@@ -47,6 +47,8 @@ This configuration includes a dedicated module for managing Java versions via SD
    chmod +x install.sh scripts/install/*.sh
    ./install.sh
    ```
+   Your existing `~/.zshrc` (a regular file or a symlink) is moved to `~/.zsh_config/backups/` before the new one is written.
+
    *Note: The script may prompt for your password to install Homebrew or system dependencies via `sudo`.*
 
    **macOS users**: The installer automatically handles these macOS-specific requirements:
