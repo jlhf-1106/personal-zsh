@@ -55,7 +55,7 @@ This configuration includes a dedicated module for managing Java versions via SD
    *Note: The script may prompt for your password to install Homebrew or system dependencies via `sudo`.*
 
    **macOS users**: The installer automatically handles these macOS-specific requirements:
-   - Installs **Homebrew's Bash 4+** (needed by SDKMAN!, since macOS ships with Bash 3.2).
+   - Installs **Homebrew** (if missing) and **Homebrew's Bash 4+** (needed by SDKMAN!, since macOS ships with Bash 3.2).
    - Installs **Node.js LTS** via fnm (if fnm is selected and no Node version is active).
    - Deploys **macOS-specific configurations** (Finder integration, Quick Look, etc.).
 

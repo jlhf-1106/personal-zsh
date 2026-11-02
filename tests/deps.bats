@@ -100,4 +100,14 @@ setup() {
     assert_output --partial "Installing Starship prompt"
 }
 
+@test "install_sdkman on macOS should make sure Homebrew exists before picking its bash" {
+    export INSTALL_SDKMAN=true IS_MACOS=true HOME="$BATS_TMPDIR/sdk_home"
+    rm -rf "$HOME"
+    check_brew() { echo "CHECK_BREW_CALLED"; }
+    mock_command "brew" "$BATS_TMPDIR/no-brew"
+    mock_command "curl" ""
 
+    run install_sdkman
+    assert_output --partial "CHECK_BREW_CALLED"
+    rm -rf "$HOME"
+}
