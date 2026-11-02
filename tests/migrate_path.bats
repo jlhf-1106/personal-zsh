@@ -485,3 +485,14 @@ EOF
     assert_success
     assert_output --partial "3 line(s) moved"
 }
+
+@test "apply should keep a symlinked .zshrc as a symlink" {
+    mkdir -p "$HOME/dotfiles"
+    printf 'alias ll="ls -la"\nexport PATH="$PATH:/opt/bin"\n' > "$HOME/dotfiles/zshrc"
+    ln -s "$HOME/dotfiles/zshrc" "$HOME/.zshrc"
+
+    run bash "$MIGRATE" --apply
+    assert_success
+    assert_link_exists "$HOME/.zshrc"
+    refute grep -q '/opt/bin' "$HOME/dotfiles/zshrc"
+}
