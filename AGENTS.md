@@ -50,6 +50,7 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 ### Scripting
 - Use Bash/Zsh compatible syntax.
 - Use `[[ -s "file" ]]` for existence and size checks.
+- For in-place edits in installer scripts use `sed_inplace <expr> <file>` (`common.sh`); never branch on OS for `sed -i`.
 
 ### Java (SDKMAN!)
 - Use the `jv` helper function for version switching.

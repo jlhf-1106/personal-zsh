@@ -45,11 +45,7 @@ generate_zshrc() {
     cp "$REPO_DIR/zshrc.template" "$HOME/.zshrc"
 
     local PLUGIN_LIST=$(echo $SELECTED_OMZ_PLUGINS | xargs)
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        sed -i '' "s/_DYNAMIC_PLUGINS_/$PLUGIN_LIST/g" "$HOME/.zshrc"
-    else
-        sed -i "s/_DYNAMIC_PLUGINS_/$PLUGIN_LIST/g" "$HOME/.zshrc"
-    fi
+    sed_inplace "s/_DYNAMIC_PLUGINS_/$PLUGIN_LIST/g" "$HOME/.zshrc"
 }
 
 setup_local_config() {
