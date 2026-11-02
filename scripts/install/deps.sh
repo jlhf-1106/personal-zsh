@@ -97,13 +97,7 @@ install_sdkman() {
         fi
 
         if curl -s "https://get.sdkman.io" | "$bash_bin"; then
-            if [[ "$OSTYPE" == "darwin"* ]]; then
-                sed -i '' 's/sdkman_auto_env=false/sdkman_auto_env=true/g' "$HOME/.sdkman/etc/config" 2>/dev/null
-                sed -i '' 's/sdkman_auto_answer=false/sdkman_auto_answer=true/g' "$HOME/.sdkman/etc/config" 2>/dev/null
-            else
-                sed -i 's/sdkman_auto_env=false/sdkman_auto_env=true/g' "$HOME/.sdkman/etc/config" 2>/dev/null
-                sed -i 's/sdkman_auto_answer=false/sdkman_auto_answer=true/g' "$HOME/.sdkman/etc/config" 2>/dev/null
-            fi
+            sed_inplace 's/sdkman_auto_env=false/sdkman_auto_env=true/g' "$HOME/.sdkman/etc/config" 2>/dev/null
             SUMMARY_SUCCESS+=("SDKMAN!")
         else
             SUMMARY_FAILED+=("SDKMAN! (installation failed)")
@@ -121,11 +115,7 @@ install_sdkman() {
 
             # Enable non-interactive auto answer if config exists
             if [ -f "$SDKMAN_DIR/etc/config" ]; then
-                if [[ "$OSTYPE" == "darwin"* ]]; then
-                    sed -i '' 's/sdkman_auto_answer=false/sdkman_auto_answer=true/g' "$SDKMAN_DIR/etc/config" 2>/dev/null
-                else
-                    sed -i 's/sdkman_auto_answer=false/sdkman_auto_answer=true/g' "$SDKMAN_DIR/etc/config" 2>/dev/null
-                fi
+                sed_inplace 's/sdkman_auto_answer=false/sdkman_auto_answer=true/g' "$SDKMAN_DIR/etc/config"
             fi
 
             # Check if Java 21 is installed
