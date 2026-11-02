@@ -22,6 +22,12 @@ source "$REPO_DIR/scripts/install/config.sh"
 
 log_step "Starting Zsh configuration setup..."
 
+# zsh reads $ZDOTDIR/.zshrc, but this installer only manages ~/.zshrc.
+if [ -n "$ZDOTDIR" ] && [ "$ZDOTDIR" != "$HOME" ]; then
+    log_err "ZDOTDIR is set to $ZDOTDIR. This installer only manages ~/.zshrc; unset ZDOTDIR and re-run."
+    exit 1
+fi
+
 # 2. Preferences & Selection
 load_preferences
 verify_mandatory_deps
@@ -44,7 +50,12 @@ else
     # 4. Configuration Phase
     setup_starship
     copy_modular_configs
-    generate_zshrc
+    if [ -s "$HOME/.oh-my-zsh/oh-my-zsh.sh" ]; then
+        generate_zshrc
+    else
+        log_err "Oh My Zsh is missing, keeping your current ~/.zshrc."
+        SUMMARY_FAILED+=(".zshrc (not generated: Oh My Zsh missing)")
+    fi
     setup_local_config
     install_fonts
 fi
