@@ -9,7 +9,6 @@ for arg in "$@"; do
     case $arg in
         --dry-run)
         DRY_RUN=true
-        shift
         ;;
     esac
 done
