@@ -27,7 +27,7 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 
 ### PATH Migration
 - **Script**: `scripts/migrate_path.sh` — moves explicit, single-line `PATH` definitions from `~/.zshrc` to `~/.zshenv`.
-- **Automatic Execution**: Sourced automatically on shell startup via `config/core/path_migrate.zsh`. If new `PATH` definitions are added to `~/.zshrc`, reloading `~/.zshrc` auto-migrates them quietly and re-sources `~/.zshenv`.
+- **Manual only**: Run it by hand from the repo. It is not run at shell startup: moved lines lose variables defined earlier in `.zshrc` and lose PATH priority (macOS `path_helper` and `brew shellenv` run after `.zshenv`), so the user must review the dry run first.
 - **Rationale**: `.zshenv` is loaded in every zsh session (interactive, non-interactive, cron, launchd, GUI apps), making it the correct place for `PATH`.
 - **Dry-run by default**: Running without flags shows detected lines without modifying anything. Use `--apply` to execute.
 - **Stateful parser**: Tracks `if`/`for`/`while`/`case` block depth and `{ }` brace depth to skip lines inside conditionals and functions.

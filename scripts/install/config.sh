@@ -21,8 +21,9 @@ setup_starship() {
 copy_modular_configs() {
     echo "⚙️  Copying selected configurations..."
     # Remove old config files only: backups/ must survive a reinstall.
-    mkdir -p "$CONFIG_DEST/scripts"
-    rm -f "$CONFIG_DEST"/*.zsh
+    # scripts/ held the old auto PATH migration; drop it on upgrade.
+    mkdir -p "$CONFIG_DEST"
+    rm -rf "$CONFIG_DEST"/*.zsh "$CONFIG_DEST/scripts"
     for file_name in $SELECTED_CONFIG_FILES; do
         if [ -f "$REPO_DIR/config/core/$file_name" ]; then
             cp "$REPO_DIR/config/core/$file_name" "$CONFIG_DEST/"
@@ -30,11 +31,6 @@ copy_modular_configs() {
             cp "$REPO_DIR/config/plugins/$file_name" "$CONFIG_DEST/"
         fi
     done
-
-    if [ -f "$REPO_DIR/scripts/migrate_path.sh" ]; then
-        cp "$REPO_DIR/scripts/migrate_path.sh" "$CONFIG_DEST/scripts/"
-        chmod +x "$CONFIG_DEST/scripts/migrate_path.sh"
-    fi
 }
 
 generate_zshrc() {
