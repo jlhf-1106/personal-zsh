@@ -37,7 +37,7 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 - **Structure**: The `config/` directory is organized into subdirectories:
     - **`config/core/`**: Essential system configurations (always installed).
     - **`config/plugins/`**: Functional modules.
-- **Selective Deployment**: `install.sh` copies files to `~/.zsh_config/` **selectively** based on the enabled features in `.zsh_plugins.env`.
+- **Selective Deployment**: `install.sh` copies files to `~/.zsh_config/` **selectively** based on the enabled features in `.zsh_plugins.env`. A rerun replaces the `*.zsh` files but never deletes `~/.zsh_config/backups/`.
 - **Dynamic Plugins**: `zshrc.template` contains a `_DYNAMIC_PLUGINS_` placeholder that is replaced during installation with the list of Oh My Zsh plugins corresponding to the selected features.
 - **Rule**: Never modify `~/.zshrc` directly; add/edit files in `config/`.
 - **Rule**: Each tool or logical set **MUST** have its own `.zsh` file.
