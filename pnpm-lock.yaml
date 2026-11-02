@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      '@caveman-ai/cli':
+        specifier: ^4.0.1
+        version: 4.0.1
       bats:
         specifier: ^1.13.0
         version: 1.13.0
@@ -22,6 +25,11 @@ importers:
         version: 0.3.0(bats@1.13.0)
 
 packages:
+
+  '@caveman-ai/cli@4.0.1':
+    resolution: {integrity: sha512-ik1hgVGrhkha9YcZKSijfcS97nKjwYKyI4rvs7+7spTsNyBWClhgC2lAzgDkj3n5OvFcaROzNOHQ3jcS3AYCxw==}
+    engines: {node: '>=22.13'}
+    hasBin: true
 
   bats-assert@2.2.4:
     resolution: {integrity: sha512-EcaY4Z+Tbz1c7pnC1SrVSq0epr7tLwFpz6qt7KUW9K8uSw8V12DTfH9d2HxZWvBEATaCuMsZ7KoZMFiSQPRoXw==}
@@ -45,6 +53,8 @@ packages:
     hasBin: true
 
 snapshots:
+
+  '@caveman-ai/cli@4.0.1': {}
 
   bats-assert@2.2.4(bats-support@0.3.0(bats@1.13.0))(bats@1.13.0):
     dependencies:

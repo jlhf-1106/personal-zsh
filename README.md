@@ -152,6 +152,25 @@ The pipeline tests across:
     - `core/`: Base system configurations (OS detection, history, aliases).
     - `plugins/`: Tool-specific and functional configurations (Brew, Docker, SDKMAN, etc.).
     - `starship.toml`: Starship configuration using the Gruvbox Rainbow preset.
+- `AGENTS.md`, `CLAUDE.md`, `.agents/`, `.claude/`, `.gemini/`: AI coding agent configuration (see below).
+
+## AI Agents
+
+The repository is set up to work with the most popular AI coding agents using a single source of truth:
+
+- **`AGENTS.md`** (root): shared project instructions. Read natively by Codex, Google Antigravity, Cursor, GitHub Copilot, Windsurf, Zed, Jules, Amp, Aider and others.
+- **`CLAUDE.md`**: imports `AGENTS.md` for Claude Code (`@AGENTS.md`).
+- **`.gemini/settings.json`**: tells Gemini CLI to load `AGENTS.md` as its context file.
+- **`.agents/skills/`**: shared [Agent Skills](https://agentskills.io) (`SKILL.md`), discovered by Antigravity, Codex, Gemini CLI, Cursor and Copilot. `.claude/skills` is a symlink to it for Claude Code.
+
+Installed skills: `caveman` and [`ponytail`](https://github.com/DietrichGebert/ponytail) (`/ponytail`, `/ponytail-review`, `/ponytail-audit`, `/ponytail-debt`, `/ponytail-gain`, `/ponytail-help`). Third-party skills are installed with `npx skills add <owner/repo> --skill '*' --agent antigravity` (tracked in `skills-lock.json`).
+
+Development tooling for working on this repo with agents (not deployed by `install.sh`):
+
+- **[Caveman CLI](https://www.npmjs.com/package/@caveman-ai/cli)** (`@caveman-ai/cli`, devDependency): after `pnpm install`, run `pnpm caveman claude` (or `codex`, `gemini`, …) to run an agent through its local context-compression proxy; `pnpm caveman stats` shows token usage. Requires Node.js 22.13+; the first run (or `pnpm caveman setup --install`) downloads its companion binaries into `~/.caveman/bin`.
+- **Ponytail** and **caveman** skills: see the installed skills above.
+
+To add instructions, edit `AGENTS.md`; to add a skill, create `.agents/skills/<name>/SKILL.md`. Personal agent settings (`.claude/settings.local.json`, `CLAUDE.local.md`, `.gemini/.env`) are git-ignored.
 
 ## Utilities
 
