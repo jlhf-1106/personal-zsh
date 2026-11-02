@@ -190,6 +190,10 @@ Moves explicit, single-line `PATH` definitions from `~/.zshrc` to `~/.zshenv`, w
 ./scripts/migrate_path.sh --apply
 ```
 
+The script is never run automatically. Review the dry run before applying, because `.zshenv` runs before everything else:
+- A moved line that uses a variable set earlier in `~/.zshrc` (for example `export PATH="$BUN_INSTALL/bin:$PATH"`) sees that variable empty. Move the variable too, by hand.
+- On macOS, `/etc/zprofile` (`path_helper`) and `brew shellenv` run later and put their folders first, so a moved line meant to override system tools loses its priority.
+
 The script:
 - **Dry-runs by default** — shows detected lines without touching any file.
 - **Creates timestamped backups** in `~/.zsh_config/backups/` before modifying anything.

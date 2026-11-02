@@ -7,7 +7,7 @@ PLUGINS_CONF="${PLUGINS_CONF:-$REPO_DIR/.zsh_plugins.env}"
 
 # Global state
 SELECTED_OMZ_PLUGINS="history git"
-SELECTED_CONFIG_FILES="00-os.zsh path_migrate.zsh brew.zsh aliases.zsh exports.zsh history.zsh zsh-plugins.zsh git.zsh"
+SELECTED_CONFIG_FILES="00-os.zsh brew.zsh aliases.zsh exports.zsh history.zsh zsh-plugins.zsh git.zsh"
 BREW_DEPS=""
 INSTALL_SDKMAN=false
 SUMMARY_SUCCESS=()
