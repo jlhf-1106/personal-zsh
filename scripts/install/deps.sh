@@ -79,6 +79,8 @@ install_sdkman() {
         # so we use Homebrew's modern Bash when available.
         local bash_bin="bash"
         if [ "$IS_MACOS" = true ]; then
+            # Without brew, "$(brew --prefix)/bin/bash" would be /bin/bash (3.2).
+            check_brew
             local brew_bash
             brew_bash="$(brew --prefix)/bin/bash"
             if [ -x "$brew_bash" ]; then

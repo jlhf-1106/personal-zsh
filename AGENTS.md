@@ -54,6 +54,7 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 ### Java (SDKMAN!)
 - Use the `jv` helper function for version switching.
 - Auto-installs Java 21 (`21-tem`) upon SDKMAN! installation.
+- On macOS, `install_sdkman` calls `check_brew` first, then uses Homebrew's Bash 4+ for the SDKMAN! installer.
 - Use `.sdkmanrc` for project-specific versions.
 
 ### Theming & Prompt
