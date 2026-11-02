@@ -1,6 +1,3 @@
 # Git Aliases
-alias gst="git status"
-alias ga="git add"
+# gst, ga, gp and gl come from the OMZ git plugin; only override gc.
 alias gc="git commit -m"
-alias gp="git push"
-alias gl="git pull"

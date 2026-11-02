@@ -65,7 +65,7 @@ select_features() {
     confirm_feature "SDKMAN" "Java Manager (SDKMAN!)" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS sdk"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES sdkman.zsh"; INSTALL_SDKMAN=true; }
     confirm_feature "MAVEN" "Maven (mvn)" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS mvn"; BREW_DEPS="$BREW_DEPS maven"; }
     confirm_feature "AWS" "AWS CLI" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS aws"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES aws.zsh"; BREW_DEPS="$BREW_DEPS awscli"; add_brew_dep fzf; }
-    confirm_feature "AZURE" "Azure CLI" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS azure"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES azure.zsh"; BREW_DEPS="$BREW_DEPS azure-cli"; }
+    confirm_feature "AZURE" "Azure CLI" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS azure"; BREW_DEPS="$BREW_DEPS azure-cli"; }
     if confirm_feature "NG" "Angular CLI (ng)"; then
         # The OMZ ng plugin provides lazy completion (runs ng only on Tab).
         SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS ng"

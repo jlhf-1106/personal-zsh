@@ -150,7 +150,7 @@ CI uses Node.js 22 (required by the `@caveman-ai/cli` devDependency).
 - `scripts/install/`: Modular installation scripts (features, dependencies, configuration).
 - `scripts/migrate_path.sh`: Utility to move PATH definitions from `~/.zshrc` to `~/.zshenv`.
 - `config/`: 
-    - `core/`: Base system configurations (OS detection, history, aliases).
+    - `core/`: Base system configurations (OS detection, macOS helpers). History, aliases and Git aliases live in `plugins/` and are always installed.
     - `plugins/`: Tool-specific and functional configurations (Brew, Docker, SDKMAN, etc.).
     - `starship.toml`: Starship configuration using the Gruvbox Rainbow preset.
 - `AGENTS.md`, `CLAUDE.md`, `.agents/`, `.claude/`, `.gemini/`: AI coding agent configuration (see below).
