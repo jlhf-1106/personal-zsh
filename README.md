@@ -11,7 +11,7 @@ This repository contains a portable, modular Zsh configuration based on **Oh My 
 - **Starship Prompt**: Fast, asynchronous [Starship](https://starship.rs) prompt featuring the powerline-style **Gruvbox Rainbow** preset with contextual segments for OS, directory, Git status, language runtimes, containers, and timestamps.
 - **Java Management**: Integrated [SDKMAN!](https://sdkman.io/) with automatic version switching.
 - **Angular CLI**: Tab completion comes from the Oh My Zsh `ng` plugin, which only calls `ng` when you press Tab (no startup cost).
-- **Utility Tools**: Includes handy utilities like **Extract** (one command to unzip anything) and **Warp Directory (wd)** for quick navigation.
+- **Utility Tools**: Includes handy utilities like **Extract** (the Oh My Zsh `extract` plugin: one command for `.zip`, `.tar.*`, `.xz`, `.zst`, `.7z`, `.rar`, `.deb` and more) and **Warp Directory (wd)** for quick navigation.
 
 ## Mandatory Dependencies
 
