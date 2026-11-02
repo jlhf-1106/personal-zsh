@@ -61,7 +61,7 @@ This configuration includes a dedicated module for managing Java versions via SD
 
 ## Configuration Preferences
 
-Your selected features are stored in `.zsh_plugins.env`. You can manually edit this file to enable or disable features and then re-run `./install.sh`.
+Your selected features are stored in `.zsh_plugins.env`, created on the first run. It is git-ignored, so each machine keeps its own answers and a fresh clone always asks. You can manually edit this file to enable or disable features and then re-run `./install.sh`.
 
 Example `.zsh_plugins.env`:
 ```bash
