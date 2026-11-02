@@ -97,6 +97,6 @@ select_features() {
     fi
     confirm_feature "GOLANG" "Go Language" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS golang"; BREW_DEPS="$BREW_DEPS go"; }
     confirm_feature "FZF" "Fzf (Fuzzy Finder)" && BREW_DEPS="$BREW_DEPS fzf"
-    confirm_feature "EXTRACT" "Extract Utility" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS extract"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES extract.zsh"; }
+    confirm_feature "EXTRACT" "Extract Utility" && SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS extract"
     confirm_feature "WD" "Warp Directory (wd)" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS wd"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES wd.zsh"; }
 }
