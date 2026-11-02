@@ -25,3 +25,6 @@ log_info() { echo "   ✅ $1"; }
 log_warn() { echo "   ⚠️  $1"; }
 log_err() { echo "   ❌ $1"; }
 log_step() { echo "🚀 $1"; }
+
+# In-place sed for both BSD (macOS) and GNU sed: sed_inplace <expr> <file>
+sed_inplace() { sed -i.bak "$1" "$2" && rm -f "$2.bak"; }
