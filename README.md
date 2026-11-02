@@ -133,7 +133,7 @@ Tests are managed via `pnpm`. To run the full test suite:
 A GitHub Actions pipeline runs on every push to `main` and on every pull request (including stacked PRs that target another PR branch). Each run:
 
 1. Checks syntax with `zsh -n` (all `config/**/*.zsh` and `zshrc.template`) and `bash -n` (installer scripts).
-2. Runs the **full** Bats suite with `pnpm test`. It takes seconds, so there is no per-file filtering.
+2. Installs Starship, then runs the **full** Bats suite with `pnpm test`. Tests that need a missing tool (Starship, Python 3.11+ `tomllib`) are reported as **skipped**, never as passed. It takes seconds, so there is no per-file filtering.
 
 The pipeline tests across:
 - **Ubuntu** (Latest)
