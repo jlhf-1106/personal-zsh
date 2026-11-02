@@ -94,3 +94,15 @@ teardown() {
     assert_link_exists "$CONFIG_DEST"/backups/.zshrc.bak.*
     assert_file_contains "$HOME/.zshrc" "plugins=(history git)"
 }
+
+@test "copy_modular_configs should keep backups and drop deselected configs" {
+    mkdir -p "$CONFIG_DEST/backups"
+    echo "old backup" > "$CONFIG_DEST/backups/.zshrc.bak.1"
+    echo "stale" > "$CONFIG_DEST/stale.zsh"
+
+    run copy_modular_configs
+    assert_success
+    assert_file_exists "$CONFIG_DEST/backups/.zshrc.bak.1"
+    assert_file_not_exists "$CONFIG_DEST/stale.zsh"
+    assert_file_exists "$CONFIG_DEST/00-os.zsh"
+}

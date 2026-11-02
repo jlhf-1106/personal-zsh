@@ -20,8 +20,9 @@ setup_starship() {
 
 copy_modular_configs() {
     echo "⚙️  Copying selected configurations..."
-    rm -rf "$CONFIG_DEST"
+    # Remove old config files only: backups/ must survive a reinstall.
     mkdir -p "$CONFIG_DEST/scripts"
+    rm -f "$CONFIG_DEST"/*.zsh
     for file_name in $SELECTED_CONFIG_FILES; do
         if [ -f "$REPO_DIR/config/core/$file_name" ]; then
             cp "$REPO_DIR/config/core/$file_name" "$CONFIG_DEST/"
