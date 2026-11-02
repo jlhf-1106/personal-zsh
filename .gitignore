@@ -6,3 +6,8 @@ tests/helpers/bin/
 .antigravitycli/
 .vscode/
 .idea/
+# AI agents: personal/local settings
+.claude/settings.local.json
+.claude/*.local.*
+CLAUDE.local.md
+.gemini/.env
