@@ -17,6 +17,7 @@ This repository contains a portable, modular Zsh configuration based on **Oh My 
 
 Some features pull in another tool automatically:
 
+- **AWS CLI**: Also installs `fzf`, used by the `awsp` profile picker.
 - **Angular CLI**: Installed globally with `pnpm`. If pnpm is not selected or installed, the installer adds it.
 - **Docker**: When Docker is selected (or already installed), the installer also offers `Docker Compose`.
 

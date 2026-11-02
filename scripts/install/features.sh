@@ -32,6 +32,9 @@ confirm_feature() {
     esac
 }
 
+# Add a Homebrew dependency once, even if several features need it.
+add_brew_dep() { [[ " $BREW_DEPS " == *" $1 "* ]] || BREW_DEPS="$BREW_DEPS $1"; }
+
 select_features() {
     echo "🔍 Feature selection..."
     
@@ -61,7 +64,7 @@ select_features() {
     fi
     confirm_feature "SDKMAN" "Java Manager (SDKMAN!)" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS sdk"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES sdkman.zsh"; INSTALL_SDKMAN=true; }
     confirm_feature "MAVEN" "Maven (mvn)" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS mvn"; BREW_DEPS="$BREW_DEPS maven"; }
-    confirm_feature "AWS" "AWS CLI" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS aws"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES aws.zsh"; BREW_DEPS="$BREW_DEPS awscli"; }
+    confirm_feature "AWS" "AWS CLI" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS aws"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES aws.zsh"; BREW_DEPS="$BREW_DEPS awscli"; add_brew_dep fzf; }
     confirm_feature "AZURE" "Azure CLI" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS azure"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES azure.zsh"; BREW_DEPS="$BREW_DEPS azure-cli"; }
     if confirm_feature "NG" "Angular CLI (ng)"; then
         # The OMZ ng plugin provides lazy completion (runs ng only on Tab).
@@ -70,13 +73,11 @@ select_features() {
         
         if [[ "$ENABLE_PNPM" != "true" ]] && ! command -v pnpm &> /dev/null; then
             echo "⚠️  Warning: Angular CLI will be installed globally via pnpm (mandatory for security)."
-            if [[ ! " $BREW_DEPS " =~ " pnpm " ]]; then
-                BREW_DEPS="$BREW_DEPS pnpm"
-            fi
+            add_brew_dep pnpm
         fi
     fi
     confirm_feature "GOLANG" "Go Language" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS golang"; BREW_DEPS="$BREW_DEPS go"; }
-    confirm_feature "FZF" "Fzf (Fuzzy Finder)" && BREW_DEPS="$BREW_DEPS fzf"
+    confirm_feature "FZF" "Fzf (Fuzzy Finder)" && add_brew_dep fzf
     confirm_feature "EXTRACT" "Extract Utility" && SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS extract"
     confirm_feature "WD" "Warp Directory (wd)" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS wd"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES wd.zsh"; }
 }
