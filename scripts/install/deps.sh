@@ -35,7 +35,9 @@ install_brew_deps() {
 install_omz() {
     if [ ! -d "$HOME/.oh-my-zsh" ]; then
         echo "📦 Installing Oh My Zsh..."
-        if sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended; then
+        # Pin the install path and keep ~/.zshrc: the OMZ installer otherwise
+        # follows $ZSH/$ZDOTDIR and replaces .zshrc on its own.
+        if ZSH="$HOME/.oh-my-zsh" KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended; then
             SUMMARY_SUCCESS+=("Oh My Zsh")
         else
             SUMMARY_FAILED+=("Oh My Zsh (installation failed)")

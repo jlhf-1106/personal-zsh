@@ -47,7 +47,9 @@ This configuration includes a dedicated module for managing Java versions via SD
    chmod +x install.sh scripts/install/*.sh
    ./install.sh
    ```
-   Your existing `~/.zshrc` (a regular file or a symlink) is moved to `~/.zsh_config/backups/` before the new one is written. Re-running the installer never deletes earlier backups.
+   Your existing `~/.zshrc` (a regular file or a symlink) is moved to `~/.zsh_config/backups/` before the new one is written. Re-running the installer never deletes earlier backups. If Oh My Zsh fails to install, your current `~/.zshrc` is kept as is.
+
+   *Note: The installer manages `~/.zshrc` only. If you set `ZDOTDIR` to another folder, it stops and asks you to unset it.*
 
    *Note: The script may prompt for your password to install Homebrew or system dependencies via `sudo`.*
 
