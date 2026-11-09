@@ -72,6 +72,10 @@ ZSH_THEME=""
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(_DYNAMIC_PLUGINS_)
 
+# Homebrew must be on PATH/fpath before Oh My Zsh: the fnm, gh and golang
+# plugins check for their command at load time, and compinit runs inside it.
+[[ -f "$HOME/.zsh_config/brew.zsh" ]] && source "$HOME/.zsh_config/brew.zsh"
+
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -106,6 +110,8 @@ source $ZSH/oh-my-zsh.sh
 # Load modular configuration files
 if [ -d "$HOME/.zsh_config" ]; then
   for config_file in "$HOME"/.zsh_config/*.zsh; do
+    # brew.zsh already ran before Oh My Zsh.
+    [[ "$config_file" == */brew.zsh ]] && continue
     [ -f "$config_file" ] && source "$config_file"
   done
 fi

@@ -5,7 +5,7 @@ This repository contains a portable, modular Zsh configuration based on **Oh My 
 ## Features
 - **Granular Installation**: Choose exactly which tools and plugins to install (Git, Git LFS, GitHub CLI, Node, pnpm, Bun, Docker, AWS, Azure, Angular, Go, Maven, etc.) independently via an interactive menu.
 - **Enhanced Terminal Experience**: Includes pre-configured support for **Zsh Autosuggestions**, **Syntax Highlighting**, and **Fzf** (Fuzzy Finder). Fzf key bindings (Ctrl-R history, Ctrl-T files, Alt-C dirs) load via `fzf --zsh` on macOS and Linux, with a fallback for older apt packages. Press **Esc Esc** to add or remove `sudo` at the start of the command (Oh My Zsh `sudo` plugin).
-- **Homebrew Integration**: Automatically installs missing CLI tools using Homebrew for a seamless setup.
+- **Homebrew Integration**: Automatically installs missing CLI tools using Homebrew for a seamless setup. `~/.zshrc` loads Homebrew before Oh My Zsh, so the `fnm`, `gh` and `golang` plugins and Homebrew completions work on Apple Silicon and Linux.
 - **Modular Structure**: Configuration is split into specialized subdirectories. Only the configurations for selected features are deployed.
 - **Dynamic Plugin Management**: Automatically generates the Oh My Zsh plugin list based on your preferences.
 - **Starship Prompt**: Fast, asynchronous [Starship](https://starship.rs) prompt featuring the powerline-style **Gruvbox Rainbow** preset with contextual segments for OS, directory, Git status, language runtimes, containers, and timestamps.

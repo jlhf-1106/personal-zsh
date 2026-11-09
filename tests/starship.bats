@@ -125,3 +125,12 @@ teardown() {
     assert_success
     assert_output --partial "Installing Starship prompt"
 }
+
+@test "zshrc.template loads brew.zsh before Oh My Zsh, and only once" {
+    local brew_line omz_line
+    brew_line=$(grep -n 'zsh_config/brew.zsh' "$REPO_DIR/zshrc.template" | head -1 | cut -d: -f1)
+    omz_line=$(grep -n 'source \$ZSH/oh-my-zsh.sh' "$REPO_DIR/zshrc.template" | cut -d: -f1)
+    [ -n "$brew_line" ] && [ "$brew_line" -lt "$omz_line" ]
+    run grep -c '\*/brew.zsh' "$REPO_DIR/zshrc.template"
+    assert_output "1"
+}
