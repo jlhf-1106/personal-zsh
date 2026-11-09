@@ -22,7 +22,7 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
     - `features.sh`: Interactive feature selection and preference loading.
     - `deps.sh`: Installation of Homebrew, OMZ, Starship, and custom plugins.
     - `config.sh`: Deployment of Starship configuration, modular configs, and fonts.
-- **Preferences**: Persists preferences in `.zsh_plugins.env`.
+- **Preferences**: Persists preferences in `.zsh_plugins.env` (git-ignored, per machine; never commit it).
 
 ### PATH Migration
 - **Script**: `scripts/migrate_path.sh` — moves explicit, single-line `PATH` definitions from `~/.zshrc` to `~/.zshenv`.
