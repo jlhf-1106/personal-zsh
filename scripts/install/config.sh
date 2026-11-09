@@ -80,6 +80,12 @@ install_fonts() {
         FONT_DIR="$HOME/.local/share/fonts"
     fi
 
+    # WSL: the Windows terminal draws the text, so it only sees Windows fonts.
+    if grep -qi microsoft /proc/version 2>/dev/null; then
+        log_warn "WSL: install the Nerd Font on Windows and select it in your terminal profile (see README)."
+        SUMMARY_FAILED+=("Nerd Fonts on Windows (WSL: install $REPO_DIR/icons-font/NerdFontsSymbolsOnly.zip on Windows)")
+    fi
+
     if [ -f "$FONT_DIR/SymbolsNerdFont-Regular.ttf" ]; then
         log_info "Nerd Fonts are already installed."
         SUMMARY_SUCCESS+=("Nerd Fonts")
