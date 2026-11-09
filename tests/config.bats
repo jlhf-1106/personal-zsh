@@ -106,3 +106,26 @@ teardown() {
     assert_file_not_exists "$CONFIG_DEST/stale.zsh"
     assert_file_exists "$CONFIG_DEST/00-os.zsh"
 }
+
+@test "setup_starship should back up a customized starship.toml" {
+    mkdir -p "$REPO_DIR/config" "$HOME/.config"
+    echo 'format = "$all"' > "$REPO_DIR/config/starship.toml"
+    echo 'my prompt' > "$HOME/.config/starship.toml"
+
+    run setup_starship
+    assert_success
+    assert_file_contains "$HOME/.config/starship.toml" 'format = "\$all"'
+    run cat "$CONFIG_DEST"/backups/starship.toml.bak.*
+    assert_output "my prompt"
+}
+
+@test "setup_starship should not back up an identical starship.toml" {
+    mkdir -p "$REPO_DIR/config" "$HOME/.config"
+    echo 'format = "$all"' > "$REPO_DIR/config/starship.toml"
+    cp "$REPO_DIR/config/starship.toml" "$HOME/.config/starship.toml"
+
+    run setup_starship
+    assert_success
+    run ls "$CONFIG_DEST"/backups/starship.toml.bak.*
+    assert_failure
+}

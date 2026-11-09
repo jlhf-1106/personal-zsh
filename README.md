@@ -49,7 +49,7 @@ This configuration includes a dedicated module for managing Java versions via SD
    chmod +x install.sh scripts/install/*.sh
    ./install.sh
    ```
-   Your existing `~/.zshrc` (a regular file or a symlink) is moved to `~/.zsh_config/backups/` before the new one is written. Re-running the installer never deletes earlier backups. If Oh My Zsh fails to install, your current `~/.zshrc` is kept as is.
+   Your existing `~/.zshrc` (a regular file or a symlink) is moved to `~/.zsh_config/backups/` before the new one is written. A customized `~/.config/starship.toml` is backed up there too (an identical one is left alone). Re-running the installer never deletes earlier backups. If Oh My Zsh fails to install, your current `~/.zshrc` is kept as is.
 
    *Note: The installer manages `~/.zshrc` only. If you set `ZDOTDIR` to another folder, it stops and asks you to unset it.*
 
