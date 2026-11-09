@@ -88,6 +88,7 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 | `package.json` → `@caveman-ai/cli` | Dev-only Caveman CLI: `pnpm caveman <agent>` wraps an agent with local context compression (Node 22.13+) | Claude Code, Codex, Gemini CLI, Aider, OpenCode, … |
 
 - **Installed skills**: `caveman`, `ponytail` (+ `ponytail-audit`, `ponytail-debt`, `ponytail-gain`, `ponytail-help`, `ponytail-review`).
+- **Project skill** `board-sync` (`.agents/skills/board-sync/`): moves board tickets through the columns (`scripts/move.sh`) and reads/sets the org's native **Priority** issue field (`scripts/priority.sh`; Urgent > High > Medium > Low, never labels). Pick work by priority with `priority.sh list ready`. Every issue/PR gets one type label (`bug`, `enhancement`, `documentation`, `performance`, `refactor`, `tests`, `ci`, `chore`, matching the commit prefix); reuse existing labels, create one only when none fits, and the PR mirrors its issue's labels.
 - **Installing third-party skills**: `npx skills add <owner/repo> --skill '*' --agent antigravity` writes to `.agents/skills/` and records the source in `skills-lock.json`; update with `npx skills update -p`.
 - **Scope**: Ponytail, caveman and the Caveman CLI are tooling for *developing this repo*. They are not installer features: never add them to `install.sh`, `scripts/install/` or `config/`.
 - **Adding a skill**: Create `.agents/skills/<name>/SKILL.md` (YAML frontmatter with `name` and `description`). It becomes available to every tool above automatically.

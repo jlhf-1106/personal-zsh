@@ -164,7 +164,7 @@ The repository is set up to work with the most popular AI coding agents using a 
 - **`.gemini/settings.json`**: tells Gemini CLI to load `AGENTS.md` as its context file.
 - **`.agents/skills/`**: shared [Agent Skills](https://agentskills.io) (`SKILL.md`), discovered by Antigravity, Codex, Gemini CLI, Cursor and Copilot. `.claude/skills` is a symlink to it for Claude Code.
 
-Installed skills: `caveman` and [`ponytail`](https://github.com/DietrichGebert/ponytail) (`/ponytail`, `/ponytail-review`, `/ponytail-audit`, `/ponytail-debt`, `/ponytail-gain`, `/ponytail-help`). Third-party skills are installed with `npx skills add <owner/repo> --skill '*' --agent antigravity` (tracked in `skills-lock.json`).
+Installed skills: `caveman` and [`ponytail`](https://github.com/DietrichGebert/ponytail) (`/ponytail`, `/ponytail-review`, `/ponytail-audit`, `/ponytail-debt`, `/ponytail-gain`, `/ponytail-help`), plus the project skill `board-sync`, which keeps the GitHub board columns, the native **Priority** field and the type label (`bug`, `enhancement`, `documentation`, `performance`, …) of each ticket in sync. Third-party skills are installed with `npx skills add <owner/repo> --skill '*' --agent antigravity` (tracked in `skills-lock.json`).
 
 Development tooling for working on this repo with agents (not deployed by `install.sh`):
 
