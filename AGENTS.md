@@ -104,4 +104,4 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 
 ## Maintenance
 - **Reload**: `reload` alias.
-- **Edit**: `zshconfig` alias.
+- **Edit**: `zshconfig` alias (opens `$EDITOR`: `nvim`, else `vim`, else `vi`, set in `exports.zsh`).

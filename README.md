@@ -93,9 +93,11 @@ To keep your secrets safe and avoid committing them to a repository, this projec
 
 ### How to use it:
 
+`EDITOR` (and the `zshconfig` alias) uses `nvim` when installed, else `vim`, else `vi`. Neovim is not installed for you.
+
 1. Open the file:
    ```bash
-   nvim ~/.zshrc.local
+   $EDITOR ~/.zshrc.local
    ```
 2. Add your exports:
    ```zsh
