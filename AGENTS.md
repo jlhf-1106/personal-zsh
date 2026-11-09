@@ -61,6 +61,7 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 
 ### Theming & Prompt
 - Prompt is managed via **Starship** using the **Gruvbox Rainbow** preset (`config/starship.toml`).
+- On WSL, `install_fonts` warns that the Nerd Font must be installed on Windows (the Windows terminal only sees Windows fonts).
 - OMZ themes are disabled (`ZSH_THEME=""` in `zshrc.template`).
 - Syntax highlighting styles and fzf init (`fzf --zsh`, apt-file fallback) are defined in `config/plugins/zsh-plugins.zsh`.
 - Esc Esc (prepend/remove `sudo`) comes from the OMZ `sudo` plugin, always enabled in `common.sh`. Do not bind plain keys like space.

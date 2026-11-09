@@ -209,6 +209,8 @@ The `install.sh` script automatically installs the necessary fonts:
 - **macOS**: Installed to `~/Library/Fonts`.
 - **Linux**: Installed to `~/.local/share/fonts`.
 
+> **Note for WSL**: The Windows terminal (e.g. Windows Terminal) draws the text, so it only sees **Windows** fonts. Install the font on Windows too: open `icons-font/NerdFontsSymbolsOnly.zip` from Windows (e.g. `\\wsl$\Ubuntu\home\<you>\personal-zsh\icons-font`), right-click the `.ttf` → **Install**, then pick it in your Windows Terminal profile (**Appearance → Font face**). The installer prints a reminder on WSL.
+
 > **Note for Linux**: We have disabled the automatic `fontconfig` rule because it can make some fonts appear thicker or in bold. We recommend manual configuration in your terminal settings (see below).
 
 ### Terminal Configuration
