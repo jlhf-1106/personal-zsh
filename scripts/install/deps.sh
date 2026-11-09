@@ -35,7 +35,9 @@ install_brew_deps() {
 install_omz() {
     if [ ! -d "$HOME/.oh-my-zsh" ]; then
         echo "📦 Installing Oh My Zsh..."
-        if sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended; then
+        # Pin the install path and keep ~/.zshrc: the OMZ installer otherwise
+        # follows $ZSH/$ZDOTDIR and replaces .zshrc on its own.
+        if ZSH="$HOME/.oh-my-zsh" KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended; then
             SUMMARY_SUCCESS+=("Oh My Zsh")
         else
             SUMMARY_FAILED+=("Oh My Zsh (installation failed)")
@@ -77,6 +79,8 @@ install_sdkman() {
         # so we use Homebrew's modern Bash when available.
         local bash_bin="bash"
         if [ "$IS_MACOS" = true ]; then
+            # Without brew, "$(brew --prefix)/bin/bash" would be /bin/bash (3.2).
+            check_brew
             local brew_bash
             brew_bash="$(brew --prefix)/bin/bash"
             if [ -x "$brew_bash" ]; then
@@ -93,13 +97,7 @@ install_sdkman() {
         fi
 
         if curl -s "https://get.sdkman.io" | "$bash_bin"; then
-            if [[ "$OSTYPE" == "darwin"* ]]; then
-                sed -i '' 's/sdkman_auto_env=false/sdkman_auto_env=true/g' "$HOME/.sdkman/etc/config" 2>/dev/null
-                sed -i '' 's/sdkman_auto_answer=false/sdkman_auto_answer=true/g' "$HOME/.sdkman/etc/config" 2>/dev/null
-            else
-                sed -i 's/sdkman_auto_env=false/sdkman_auto_env=true/g' "$HOME/.sdkman/etc/config" 2>/dev/null
-                sed -i 's/sdkman_auto_answer=false/sdkman_auto_answer=true/g' "$HOME/.sdkman/etc/config" 2>/dev/null
-            fi
+            sed_inplace 's/sdkman_auto_env=false/sdkman_auto_env=true/g' "$HOME/.sdkman/etc/config" 2>/dev/null
             SUMMARY_SUCCESS+=("SDKMAN!")
         else
             SUMMARY_FAILED+=("SDKMAN! (installation failed)")
@@ -117,11 +115,7 @@ install_sdkman() {
 
             # Enable non-interactive auto answer if config exists
             if [ -f "$SDKMAN_DIR/etc/config" ]; then
-                if [[ "$OSTYPE" == "darwin"* ]]; then
-                    sed -i '' 's/sdkman_auto_answer=false/sdkman_auto_answer=true/g' "$SDKMAN_DIR/etc/config" 2>/dev/null
-                else
-                    sed -i 's/sdkman_auto_answer=false/sdkman_auto_answer=true/g' "$SDKMAN_DIR/etc/config" 2>/dev/null
-                fi
+                sed_inplace 's/sdkman_auto_answer=false/sdkman_auto_answer=true/g' "$SDKMAN_DIR/etc/config"
             fi
 
             # Check if Java 21 is installed

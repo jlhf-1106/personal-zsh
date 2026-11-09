@@ -22,6 +22,6 @@ setup() {
 }
 
 @test "initial state is set correctly" {
-    assert_equal "$SELECTED_OMZ_PLUGINS" "history git"
+    assert_equal "$SELECTED_OMZ_PLUGINS" "history git sudo"
     assert_equal "$INSTALL_SDKMAN" "false"
 }

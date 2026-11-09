@@ -4,20 +4,22 @@ This repository contains a portable, modular Zsh configuration based on **Oh My 
 
 ## Features
 - **Granular Installation**: Choose exactly which tools and plugins to install (Git, Git LFS, GitHub CLI, Node, pnpm, Bun, Docker, AWS, Azure, Angular, Go, Maven, etc.) independently via an interactive menu.
-- **Enhanced Terminal Experience**: Includes pre-configured support for **Zsh Autosuggestions**, **Syntax Highlighting**, and **Fzf** (Fuzzy Finder).
+- **Enhanced Terminal Experience**: Includes pre-configured support for **Zsh Autosuggestions**, **Syntax Highlighting**, and **Fzf** (Fuzzy Finder). Fzf key bindings (Ctrl-R history, Ctrl-T files, Alt-C dirs) load via `fzf --zsh` on macOS and Linux, with a fallback for older apt packages. Press **Esc Esc** to add or remove `sudo` at the start of the command (Oh My Zsh `sudo` plugin).
 - **Homebrew Integration**: Automatically installs missing CLI tools using Homebrew for a seamless setup.
 - **Modular Structure**: Configuration is split into specialized subdirectories. Only the configurations for selected features are deployed.
 - **Dynamic Plugin Management**: Automatically generates the Oh My Zsh plugin list based on your preferences.
 - **Starship Prompt**: Fast, asynchronous [Starship](https://starship.rs) prompt featuring the powerline-style **Gruvbox Rainbow** preset with contextual segments for OS, directory, Git status, language runtimes, containers, and timestamps.
 - **Java Management**: Integrated [SDKMAN!](https://sdkman.io/) with automatic version switching.
-- **Utility Tools**: Includes handy utilities like **Extract** (one command to unzip anything) and **Warp Directory (wd)** for quick navigation.
+- **Angular CLI**: Tab completion comes from the Oh My Zsh `ng` plugin, which only calls `ng` when you press Tab (no startup cost).
+- **Utility Tools**: Includes handy utilities like **Extract** (the Oh My Zsh `extract` plugin: one command for `.zip`, `.tar.*`, `.xz`, `.zst`, `.7z`, `.rar`, `.deb` and more) and **Warp Directory (wd)** for quick navigation.
 
 ## Mandatory Dependencies
 
-Some features have mandatory dependencies for security or functional reasons:
+Some features pull in another tool automatically:
 
-- **Angular CLI**: Requires global installation via `pnpm`. You must agree to this during the installation process.
-- **Docker**: Enabling Docker support requires the installation of `Docker Compose`.
+- **AWS CLI**: Also installs `fzf`, used by the `awsp` profile picker.
+- **Angular CLI**: Installed globally with `pnpm`. If pnpm is not selected or installed, the installer adds it.
+- **Docker**: When Docker is selected (or already installed), the installer also offers `Docker Compose`.
 
 ## Java & SDKMAN!
 
@@ -47,10 +49,14 @@ This configuration includes a dedicated module for managing Java versions via SD
    chmod +x install.sh scripts/install/*.sh
    ./install.sh
    ```
+   Your existing `~/.zshrc` (a regular file or a symlink) is moved to `~/.zsh_config/backups/` before the new one is written. Re-running the installer never deletes earlier backups. If Oh My Zsh fails to install, your current `~/.zshrc` is kept as is.
+
+   *Note: The installer manages `~/.zshrc` only. If you set `ZDOTDIR` to another folder, it stops and asks you to unset it.*
+
    *Note: The script may prompt for your password to install Homebrew or system dependencies via `sudo`.*
 
    **macOS users**: The installer automatically handles these macOS-specific requirements:
-   - Installs **Homebrew's Bash 4+** (needed by SDKMAN!, since macOS ships with Bash 3.2).
+   - Installs **Homebrew** (if missing) and **Homebrew's Bash 4+** (needed by SDKMAN!, since macOS ships with Bash 3.2).
    - Installs **Node.js LTS** via fnm (if fnm is selected and no Node version is active).
    - Deploys **macOS-specific configurations** (Finder integration, Quick Look, etc.).
 
@@ -126,22 +132,17 @@ Tests are managed via `pnpm`. To run the full test suite:
 
 ### Continuous Integration
 
-A GitHub Actions pipeline is configured to automatically run the test suite on every push and pull request. **Only the tests related to the files you changed are executed**, keeping CI fast and focused.
+A GitHub Actions pipeline runs on every push to `main` and on every pull request (including stacked PRs that target another PR branch). Each run:
 
-| Source changed | Test executed |
-|---|---|
-| `scripts/install/common.sh` | `tests/common.bats` |
-| `scripts/install/features.sh` | `tests/features.bats` |
-| `scripts/install/deps.sh` | `tests/deps.bats` |
-| `scripts/install/config.sh` | `tests/config.bats` |
-| `install.sh` | `tests/install.bats` |
-| `scripts/migrate_path.sh` | `tests/migrate_path.bats` |
-| Test helpers, `package.json`, or CI config | **All tests** |
+1. Checks syntax with `zsh -n` (all `config/**/*.zsh` and `zshrc.template`) and `bash -n` (installer scripts).
+2. Installs Starship, then runs the **full** Bats suite with `pnpm test`. Tests that need a missing tool (Starship, Python 3.11+ `tomllib`) are reported as **skipped**, never as passed. It takes seconds, so there is no per-file filtering.
 
 The pipeline tests across:
 - **Ubuntu** (Latest)
 - **macOS** (Latest)
 - **Windows** (via **WSL** Ubuntu-22.04)
+
+CI uses Node.js 22 (required by the `@caveman-ai/cli` devDependency).
 
 ## Structure
 - `zshrc.template`: The main entry point copied to `~/.zshrc`.
@@ -149,7 +150,7 @@ The pipeline tests across:
 - `scripts/install/`: Modular installation scripts (features, dependencies, configuration).
 - `scripts/migrate_path.sh`: Utility to move PATH definitions from `~/.zshrc` to `~/.zshenv`.
 - `config/`: 
-    - `core/`: Base system configurations (OS detection, history, aliases).
+    - `core/`: Base system configurations (OS detection, macOS helpers). History, aliases and Git aliases live in `plugins/` and are always installed.
     - `plugins/`: Tool-specific and functional configurations (Brew, Docker, SDKMAN, etc.).
     - `starship.toml`: Starship configuration using the Gruvbox Rainbow preset.
 - `AGENTS.md`, `CLAUDE.md`, `.agents/`, `.claude/`, `.gemini/`: AI coding agent configuration (see below).
@@ -186,6 +187,10 @@ Moves explicit, single-line `PATH` definitions from `~/.zshrc` to `~/.zshenv`, w
 ./scripts/migrate_path.sh --apply
 ```
 
+The script is never run automatically. Review the dry run before applying, because `.zshenv` runs before everything else:
+- A moved line that uses a variable set earlier in `~/.zshrc` (for example `export PATH="$BUN_INSTALL/bin:$PATH"`) sees that variable empty. Move the variable too, by hand.
+- On macOS, `/etc/zprofile` (`path_helper`) and `brew shellenv` run later and put their folders first, so a moved line meant to override system tools loses its priority.
+
 The script:
 - **Dry-runs by default** — shows detected lines without touching any file.
 - **Creates timestamped backups** in `~/.zsh_config/backups/` before modifying anything.
@@ -193,6 +198,7 @@ The script:
 - **Skips lines inside conditionals**, functions, multiline arrays, and comments.
 - **Appends `typeset -U path`** to the migrated block for automatic deduplication.
 - **Works on both macOS and Linux** (uses `awk`, not `sed -i`).
+- **Keeps a symlinked `~/.zshrc` a symlink** (writes through the link, e.g. into your dotfiles repo).
 
 ## Nerd Font Symbols
 

@@ -12,6 +12,7 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
     - **Bun** (`config/bun.zsh`): JavaScript runtime and manager.
     - **Homebrew** (`config/brew.zsh`): Package manager for macOS and Linux.
     - **Git LFS** (`config/plugins/git-lfs.zsh`): Git Large File Storage configuration and aliases.
+    - **Docker Compose** (`config/plugins/docker-compose.zsh`): `dc` alias; picks `docker-compose` or `docker compose` from `$commands` without running docker.
 
 ## Key Workflows
 
@@ -19,49 +20,55 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 - **Entry point**: `install.sh`.
 - **Modular Logic**: The installer is organized into scripts in `scripts/install/`:
     - `common.sh`: Shared variables and logging.
-    - `features.sh`: Interactive feature selection and preference loading.
-    - `deps.sh`: Installation of Homebrew, OMZ, Starship, and custom plugins.
-    - `config.sh`: Deployment of Starship configuration, modular configs, and fonts.
+    - `features.sh`: Interactive feature selection and preference loading. Use `add_brew_dep <formula>` when a feature needs a tool another feature may also add (e.g. AWS and FZF both need `fzf`).
+    - `deps.sh`: Installation of Homebrew, OMZ, Starship, and custom plugins. OMZ is installed with `ZSH="$HOME/.oh-my-zsh" KEEP_ZSHRC=yes` so it never touches `.zshrc`.
+- **Guards** (`install.sh`): exits if `ZDOTDIR` is set to anything but `$HOME`; skips `generate_zshrc` when `~/.oh-my-zsh/oh-my-zsh.sh` is missing.
+    - `config.sh`: Deployment of Starship configuration, modular configs, and fonts. `generate_zshrc` always moves the old `~/.zshrc` (file or symlink) to `~/.zsh_config/backups/` first.
 - **Preferences**: Persists preferences in `.zsh_plugins.env` (git-ignored, per machine; never commit it).
 
 ### PATH Migration
 - **Script**: `scripts/migrate_path.sh` — moves explicit, single-line `PATH` definitions from `~/.zshrc` to `~/.zshenv`.
-- **Automatic Execution**: Sourced automatically on shell startup via `config/core/path_migrate.zsh`. If new `PATH` definitions are added to `~/.zshrc`, reloading `~/.zshrc` auto-migrates them quietly and re-sources `~/.zshenv`.
+- **Manual only**: Run it by hand from the repo. It is not run at shell startup: moved lines lose variables defined earlier in `.zshrc` and lose PATH priority (macOS `path_helper` and `brew shellenv` run after `.zshenv`), so the user must review the dry run first.
 - **Rationale**: `.zshenv` is loaded in every zsh session (interactive, non-interactive, cron, launchd, GUI apps), making it the correct place for `PATH`.
 - **Dry-run by default**: Running without flags shows detected lines without modifying anything. Use `--apply` to execute.
 - **Stateful parser**: Tracks `if`/`for`/`while`/`case` block depth and `{ }` brace depth to skip lines inside conditionals and functions.
 - **Portability**: Uses `awk` (not `sed -i`) for line deletion to work on both macOS (BSD) and Linux (GNU).
-- **Test harness**: `tests/migrate_path.bats` validates the script via Bats (39 tests covering dry-run, apply, exclusion rules, backups, idempotency, and edge cases).
+- **Symlinks**: Rewrites `~/.zshrc` with `cat > file` (not `mv`) so a symlinked `.zshrc` stays a link.
+- **Test harness**: `tests/migrate_path.bats` validates the script via Bats (41 tests covering dry-run, apply, exclusion rules, backups, idempotency, symlinked `.zshrc`, and edge cases).
 
 ### Modular Configuration
 - **Structure**: The `config/` directory is organized into subdirectories:
     - **`config/core/`**: Essential system configurations (always installed).
     - **`config/plugins/`**: Functional modules.
-- **Selective Deployment**: `install.sh` copies files to `~/.zsh_config/` **selectively** based on the enabled features in `.zsh_plugins.env`.
+- **Selective Deployment**: `install.sh` copies files to `~/.zsh_config/` **selectively** based on the enabled features in `.zsh_plugins.env`. A rerun replaces the `*.zsh` files but never deletes `~/.zsh_config/backups/`.
 - **Dynamic Plugins**: `zshrc.template` contains a `_DYNAMIC_PLUGINS_` placeholder that is replaced during installation with the list of Oh My Zsh plugins corresponding to the selected features.
 - **Rule**: Never modify `~/.zshrc` directly; add/edit files in `config/`.
-- **Rule**: Each tool or logical set **MUST** have its own `.zsh` file.
+- **Rule**: Each tool or logical set **MUST** have its own `.zsh` file, unless the OMZ plugin covers it completely (e.g. Azure, Angular, Extract use only their OMZ plugin).
+- **Rule**: Do not add a `.zsh` file for something an enabled OMZ plugin already does (completion, aliases, functions). Never run slow commands (e.g. `ng completion script`, `docker ...`) at shell startup.
 
 ## Development Conventions
 
 ### Scripting
 - Use Bash/Zsh compatible syntax.
 - Use `[[ -s "file" ]]` for existence and size checks.
+- For in-place edits in installer scripts use `sed_inplace <expr> <file>` (`common.sh`); never branch on OS for `sed -i`.
 
 ### Java (SDKMAN!)
 - Use the `jv` helper function for version switching.
 - Auto-installs Java 21 (`21-tem`) upon SDKMAN! installation.
+- On macOS, `install_sdkman` calls `check_brew` first, then uses Homebrew's Bash 4+ for the SDKMAN! installer.
 - Use `.sdkmanrc` for project-specific versions.
 
 ### Theming & Prompt
 - Prompt is managed via **Starship** using the **Gruvbox Rainbow** preset (`config/starship.toml`).
 - OMZ themes are disabled (`ZSH_THEME=""` in `zshrc.template`).
-- Syntax highlighting styles are defined in `config/plugins/zsh-plugins.zsh`.
+- Syntax highlighting styles and fzf init (`fzf --zsh`, apt-file fallback) are defined in `config/plugins/zsh-plugins.zsh`.
+- Esc Esc (prepend/remove `sudo`) comes from the OMZ `sudo` plugin, always enabled in `common.sh`. Do not bind plain keys like space.
 
 ## Agent Guidelines (all tools)
 - **Search first**: Look for the relevant modular file in `config/` before suggesting changes.
 - **Source of truth**: `zshrc.template` is the source of truth for the linked `~/.zshrc`.
-- **Verification**: Check shell syntax with `zsh -n <file>` (or `bash -n` for `.sh` scripts) and run the Bats suite with `pnpm test`.
+- **Verification**: Check shell syntax with `zsh -n <file>` (or `bash -n` for `.sh` scripts) and run the Bats suite with `pnpm test`. CI (`.github/workflows/test.yml`) runs the same syntax checks and the full suite on Ubuntu, macOS and WSL, Node 22, for every PR.
 - **Snippets**: Be mindful of the modular nature of the config when providing code snippets.
 - **Paths**: Use absolute paths or paths relative to the project root when suggesting commands.
 

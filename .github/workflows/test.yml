@@ -3,63 +3,14 @@ name: Test
 on:
   push:
     branches: [ main ]
+  # No branch filter: stacked PRs target other PR branches, not main.
   pull_request:
-    branches: [ main ]
 
 jobs:
-  # ── Detect which source files changed ──────────────────────────
-  changes:
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: read
-    outputs:
-      common:       ${{ steps.filter.outputs.common }}
-      features:     ${{ steps.filter.outputs.features }}
-      deps:         ${{ steps.filter.outputs.deps }}
-      config:       ${{ steps.filter.outputs.config }}
-      install:      ${{ steps.filter.outputs.install }}
-      theme:        ${{ steps.filter.outputs.theme }}
-      migrate_path: ${{ steps.filter.outputs.migrate_path }}
-      infra:        ${{ steps.filter.outputs.infra }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            common:
-              - 'scripts/install/common.sh'
-              - 'tests/common.bats'
-            features:
-              - 'scripts/install/features.sh'
-              - 'tests/features.bats'
-            deps:
-              - 'scripts/install/deps.sh'
-              - 'tests/deps.bats'
-            config:
-              - 'scripts/install/config.sh'
-              - 'tests/config.bats'
-            install:
-              - 'install.sh'
-              - 'tests/install.bats'
-            starship:
-              - 'config/starship.toml'
-              - 'tests/starship.bats'
-            migrate_path:
-              - 'scripts/migrate_path.sh'
-              - 'tests/migrate_path.bats'
-            infra:
-              - 'tests/helpers/**'
-              - 'package.json'
-              - 'pnpm-lock.yaml'
-              - '.github/workflows/test.yml'
-
-  # ── Reusable setup & test steps via matrix ─────────────────────
-  test-common:
-    needs: changes
-    if: ${{ needs.changes.outputs.common == 'true' || needs.changes.outputs.infra == 'true' }}
+  test:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
     steps:
@@ -67,117 +18,24 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'pnpm'
+      - name: Install zsh
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y zsh
+      - name: Install starship (for the config warning test)
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          curl -sS https://starship.rs/install.sh | sh -s -- -y -b "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - run: pnpm install
-      - run: pnpm exec bats tests/common.bats
+      - name: Syntax check
+        run: |
+          for f in config/*/*.zsh zshrc.template; do zsh -n "$f"; done
+          for f in install.sh scripts/*.sh scripts/install/*.sh; do bash -n "$f"; done
+      - run: pnpm test
 
-  test-features:
-    needs: changes
-    if: ${{ needs.changes.outputs.features == 'true' || needs.changes.outputs.infra == 'true' }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-      - run: pnpm install
-      - run: pnpm exec bats tests/features.bats
-
-  test-deps:
-    needs: changes
-    if: ${{ needs.changes.outputs.deps == 'true' || needs.changes.outputs.infra == 'true' }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-      - run: pnpm install
-      - run: pnpm exec bats tests/deps.bats
-
-  test-config:
-    needs: changes
-    if: ${{ needs.changes.outputs.config == 'true' || needs.changes.outputs.infra == 'true' }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-      - run: pnpm install
-      - run: pnpm exec bats tests/config.bats
-
-  test-install:
-    needs: changes
-    if: ${{ needs.changes.outputs.install == 'true' || needs.changes.outputs.infra == 'true' }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-      - run: pnpm install
-      - run: pnpm exec bats tests/install.bats
-
-  test-starship:
-    needs: changes
-    if: ${{ needs.changes.outputs.starship == 'true' || needs.changes.outputs.infra == 'true' }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-      - run: pnpm install
-      - run: pnpm exec bats tests/starship.bats
-
-  test-migrate-path:
-    needs: changes
-    if: ${{ needs.changes.outputs.migrate_path == 'true' || needs.changes.outputs.infra == 'true' }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-      - run: pnpm install
-      - run: pnpm exec bats tests/migrate_path.bats
-
-  # ── Windows (WSL) — split per test, only when relevant ──────
-  test-windows-common:
-    needs: changes
-    if: ${{ needs.changes.outputs.common == 'true' || needs.changes.outputs.infra == 'true' }}
+  test-wsl:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -189,135 +47,10 @@ jobs:
         shell: wsl-bash {0}
         run: |
           sudo apt-get update
-          sudo apt-get install -y curl git unzip
-          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+          sudo apt-get install -y curl git unzip zsh
+          curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
           sudo apt-get install -y nodejs
           sudo npm install -g pnpm@10
           pnpm install
-          pnpm exec bats tests/common.bats
-
-  test-windows-features:
-    needs: changes
-    if: ${{ needs.changes.outputs.features == 'true' || needs.changes.outputs.infra == 'true' }}
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup WSL
-        uses: Vampire/setup-wsl@v3
-        with:
-          distribution: Ubuntu-22.04
-      - name: Install dependencies and run tests in WSL
-        shell: wsl-bash {0}
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y curl git unzip
-          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-          sudo apt-get install -y nodejs
-          sudo npm install -g pnpm@10
-          pnpm install
-          pnpm exec bats tests/features.bats
-
-  test-windows-deps:
-    needs: changes
-    if: ${{ needs.changes.outputs.deps == 'true' || needs.changes.outputs.infra == 'true' }}
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup WSL
-        uses: Vampire/setup-wsl@v3
-        with:
-          distribution: Ubuntu-22.04
-      - name: Install dependencies and run tests in WSL
-        shell: wsl-bash {0}
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y curl git unzip
-          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-          sudo apt-get install -y nodejs
-          sudo npm install -g pnpm@10
-          pnpm install
-          pnpm exec bats tests/deps.bats
-
-  test-windows-config:
-    needs: changes
-    if: ${{ needs.changes.outputs.config == 'true' || needs.changes.outputs.infra == 'true' }}
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup WSL
-        uses: Vampire/setup-wsl@v3
-        with:
-          distribution: Ubuntu-22.04
-      - name: Install dependencies and run tests in WSL
-        shell: wsl-bash {0}
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y curl git unzip
-          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-          sudo apt-get install -y nodejs
-          sudo npm install -g pnpm@10
-          pnpm install
-          pnpm exec bats tests/config.bats
-
-  test-windows-install:
-    needs: changes
-    if: ${{ needs.changes.outputs.install == 'true' || needs.changes.outputs.infra == 'true' }}
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup WSL
-        uses: Vampire/setup-wsl@v3
-        with:
-          distribution: Ubuntu-22.04
-      - name: Install dependencies and run tests in WSL
-        shell: wsl-bash {0}
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y curl git unzip
-          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-          sudo apt-get install -y nodejs
-          sudo npm install -g pnpm@10
-          pnpm install
-          pnpm exec bats tests/install.bats
-
-  test-windows-starship:
-    needs: changes
-    if: ${{ needs.changes.outputs.starship == 'true' || needs.changes.outputs.infra == 'true' }}
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup WSL
-        uses: Vampire/setup-wsl@v3
-        with:
-          distribution: Ubuntu-22.04
-      - name: Install dependencies and run tests in WSL
-        shell: wsl-bash {0}
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y curl git unzip
-          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-          sudo apt-get install -y nodejs
-          sudo npm install -g pnpm@10
-          pnpm install
-          pnpm exec bats tests/starship.bats
-
-  test-windows-migrate-path:
-    needs: changes
-    if: ${{ needs.changes.outputs.migrate_path == 'true' || needs.changes.outputs.infra == 'true' }}
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup WSL
-        uses: Vampire/setup-wsl@v3
-        with:
-          distribution: Ubuntu-22.04
-      - name: Install dependencies and run tests in WSL
-        shell: wsl-bash {0}
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y curl git unzip
-          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-          sudo apt-get install -y nodejs
-          sudo npm install -g pnpm@10
-          pnpm install
-          pnpm exec bats tests/migrate_path.bats
+          for f in config/*/*.zsh zshrc.template; do zsh -n "$f"; done
+          pnpm test

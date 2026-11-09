@@ -20,8 +20,10 @@ setup_starship() {
 
 copy_modular_configs() {
     echo "⚙️  Copying selected configurations..."
-    rm -rf "$CONFIG_DEST"
-    mkdir -p "$CONFIG_DEST/scripts"
+    # Remove old config files only: backups/ must survive a reinstall.
+    # scripts/ held the old auto PATH migration; drop it on upgrade.
+    mkdir -p "$CONFIG_DEST"
+    rm -rf "$CONFIG_DEST"/*.zsh "$CONFIG_DEST/scripts"
     for file_name in $SELECTED_CONFIG_FILES; do
         if [ -f "$REPO_DIR/config/core/$file_name" ]; then
             cp "$REPO_DIR/config/core/$file_name" "$CONFIG_DEST/"
@@ -29,29 +31,21 @@ copy_modular_configs() {
             cp "$REPO_DIR/config/plugins/$file_name" "$CONFIG_DEST/"
         fi
     done
-
-    if [ -f "$REPO_DIR/scripts/migrate_path.sh" ]; then
-        cp "$REPO_DIR/scripts/migrate_path.sh" "$CONFIG_DEST/scripts/"
-        chmod +x "$CONFIG_DEST/scripts/migrate_path.sh"
-    fi
 }
 
 generate_zshrc() {
     echo "📝 Generating .zshrc..."
     local BACKUP_DIR="$CONFIG_DEST/backups"
     mkdir -p "$BACKUP_DIR"
-    if [ -f "$HOME/.zshrc" ] && [ ! -L "$HOME/.zshrc" ]; then
+    # Move symlinks too: cp would write through the link into its target.
+    if [ -e "$HOME/.zshrc" ] || [ -L "$HOME/.zshrc" ]; then
         local TIMESTAMP=$(date +%Y%m%d_%H%M%S)
         mv "$HOME/.zshrc" "$BACKUP_DIR/.zshrc.bak.$TIMESTAMP"
     fi
     cp "$REPO_DIR/zshrc.template" "$HOME/.zshrc"
 
     local PLUGIN_LIST=$(echo $SELECTED_OMZ_PLUGINS | xargs)
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        sed -i '' "s/_DYNAMIC_PLUGINS_/$PLUGIN_LIST/g" "$HOME/.zshrc"
-    else
-        sed -i "s/_DYNAMIC_PLUGINS_/$PLUGIN_LIST/g" "$HOME/.zshrc"
-    fi
+    sed_inplace "s/_DYNAMIC_PLUGINS_/$PLUGIN_LIST/g" "$HOME/.zshrc"
 }
 
 setup_local_config() {

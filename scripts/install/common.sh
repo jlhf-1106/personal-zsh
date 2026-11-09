@@ -6,8 +6,8 @@ CONFIG_DEST="$HOME/.zsh_config"
 PLUGINS_CONF="${PLUGINS_CONF:-$REPO_DIR/.zsh_plugins.env}"
 
 # Global state
-SELECTED_OMZ_PLUGINS="history git"
-SELECTED_CONFIG_FILES="00-os.zsh path_migrate.zsh brew.zsh aliases.zsh exports.zsh history.zsh zsh-plugins.zsh git.zsh"
+SELECTED_OMZ_PLUGINS="history git sudo"
+SELECTED_CONFIG_FILES="00-os.zsh brew.zsh aliases.zsh exports.zsh history.zsh zsh-plugins.zsh git.zsh"
 BREW_DEPS=""
 INSTALL_SDKMAN=false
 SUMMARY_SUCCESS=()
@@ -25,3 +25,6 @@ log_info() { echo "   ✅ $1"; }
 log_warn() { echo "   ⚠️  $1"; }
 log_err() { echo "   ❌ $1"; }
 log_step() { echo "🚀 $1"; }
+
+# In-place sed for both BSD (macOS) and GNU sed: sed_inplace <expr> <file>
+sed_inplace() { sed -i.bak "$1" "$2" && rm -f "$2.bak"; }

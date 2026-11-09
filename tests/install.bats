@@ -40,3 +40,9 @@ setup() {
     assert_success
     assert_output --partial "DRY RUN: Skipping installation and configuration phases."
 }
+
+@test "install.sh should refuse to run when ZDOTDIR points elsewhere" {
+    ZDOTDIR="$BATS_TMPDIR/elsewhere" run ./install.sh --dry-run
+    assert_failure
+    assert_output --partial "ZDOTDIR is set to"
+}

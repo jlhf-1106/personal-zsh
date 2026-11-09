@@ -32,25 +32,8 @@ confirm_feature() {
     esac
 }
 
-verify_mandatory_deps() {
-    if [[ -z "$ENABLE_NG" ]]; then
-        echo "⚠️  Note: Angular CLI requires global installation via pnpm (mandatory for security)."
-        read -p "❓ Do you agree to use pnpm if you choose to install Angular? [Y/n]: " pnpm_agree
-        if [[ "$pnpm_agree" =~ ^[nN] ]]; then
-            echo "❌ Aborting installation: pnpm requirement for Angular not accepted."
-            exit 1
-        fi
-    fi
-
-    if [[ -z "$ENABLE_DOCKER" ]]; then
-        echo "⚠️  Note: Docker setup requires installing Docker Compose as a mandatory dependency."
-        read -p "❓ Do you agree to install Docker Compose if you choose to install Docker? [Y/n]: " docker_agree
-        if [[ "$docker_agree" =~ ^[nN] ]]; then
-            echo "❌ Aborting installation: Docker Compose requirement for Docker not accepted."
-            exit 1
-        fi
-    fi
-}
+# Add a Homebrew dependency once, even if several features need it.
+add_brew_dep() { [[ " $BREW_DEPS " == *" $1 "* ]] || BREW_DEPS="$BREW_DEPS $1"; }
 
 select_features() {
     echo "🔍 Feature selection..."
@@ -81,22 +64,20 @@ select_features() {
     fi
     confirm_feature "SDKMAN" "Java Manager (SDKMAN!)" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS sdk"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES sdkman.zsh"; INSTALL_SDKMAN=true; }
     confirm_feature "MAVEN" "Maven (mvn)" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS mvn"; BREW_DEPS="$BREW_DEPS maven"; }
-    confirm_feature "AWS" "AWS CLI" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS aws"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES aws.zsh"; BREW_DEPS="$BREW_DEPS awscli"; }
-    confirm_feature "AZURE" "Azure CLI" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS azure"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES azure.zsh"; BREW_DEPS="$BREW_DEPS azure-cli"; }
+    confirm_feature "AWS" "AWS CLI" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS aws"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES aws.zsh"; BREW_DEPS="$BREW_DEPS awscli"; add_brew_dep fzf; }
+    confirm_feature "AZURE" "Azure CLI" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS azure"; BREW_DEPS="$BREW_DEPS azure-cli"; }
     if confirm_feature "NG" "Angular CLI (ng)"; then
+        # The OMZ ng plugin provides lazy completion (runs ng only on Tab).
         SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS ng"
-        SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES ng.zsh"
         INSTALL_ANGULAR=true
         
         if [[ "$ENABLE_PNPM" != "true" ]] && ! command -v pnpm &> /dev/null; then
             echo "⚠️  Warning: Angular CLI will be installed globally via pnpm (mandatory for security)."
-            if [[ ! " $BREW_DEPS " =~ " pnpm " ]]; then
-                BREW_DEPS="$BREW_DEPS pnpm"
-            fi
+            add_brew_dep pnpm
         fi
     fi
     confirm_feature "GOLANG" "Go Language" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS golang"; BREW_DEPS="$BREW_DEPS go"; }
-    confirm_feature "FZF" "Fzf (Fuzzy Finder)" && BREW_DEPS="$BREW_DEPS fzf"
-    confirm_feature "EXTRACT" "Extract Utility" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS extract"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES extract.zsh"; }
+    confirm_feature "FZF" "Fzf (Fuzzy Finder)" && add_brew_dep fzf
+    confirm_feature "EXTRACT" "Extract Utility" && SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS extract"
     confirm_feature "WD" "Warp Directory (wd)" && { SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS wd"; SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES wd.zsh"; }
 }

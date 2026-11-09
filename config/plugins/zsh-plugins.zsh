@@ -6,30 +6,18 @@ export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=244'
 # Strategy: history first, then completion
 export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 
-# sudo (Press ESC ESC to prepend sudo)
-sudo-command-line() {
-    [[ -z $BUFFER ]] && LBUFFER+="$(fc -ln -1)"
-    if [[ $BUFFER == sudo\ * ]]; then
-        LBUFFER="${LBUFFER#sudo }"
-    else
-        LBUFFER="sudo $LBUFFER"
-    fi
-}
-zle -N sudo-command-line
-bindkey -M vicmd ' ' sudo-command-line
-bindkey -M viins ' ' sudo-command-line
-bindkey '\e\e' sudo-command-line
-
 # fzf integration (if installed)
+# fzf 0.48+ prints its own key bindings and completion, wherever it was
+# installed (Homebrew on macOS or Linux, apt, ...). Older distro packages
+# ship them as files instead.
 if command -v fzf &> /dev/null; then
-  # Source fzf keybindings and completion if they exist in standard locations
-  [ -f /usr/share/doc/fzf/examples/key-bindings.zsh ] && source /usr/share/doc/fzf/examples/key-bindings.zsh
-  [ -f /usr/share/doc/fzf/examples/completion.zsh ] && source /usr/share/doc/fzf/examples/completion.zsh
-  # macOS (Homebrew)
-  if [ "$IS_MACOS" = true ]; then
-    [ -f "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh" ] && source "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh"
-    [ -f "$(brew --prefix)/opt/fzf/shell/completion.zsh" ] && source "$(brew --prefix)/opt/fzf/shell/completion.zsh"
+  if fzf_init="$(fzf --zsh 2>/dev/null)"; then
+    eval "$fzf_init"
+  else
+    [ -f /usr/share/doc/fzf/examples/key-bindings.zsh ] && source /usr/share/doc/fzf/examples/key-bindings.zsh
+    [ -f /usr/share/doc/fzf/examples/completion.zsh ] && source /usr/share/doc/fzf/examples/completion.zsh
   fi
+  unset fzf_init
 fi
 
 # zsh-syntax-highlighting colors:
