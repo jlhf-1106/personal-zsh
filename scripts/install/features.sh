@@ -48,6 +48,9 @@ select_features() {
         BREW_DEPS="$BREW_DEPS unzip"
     fi
 
+    # Oh My Zsh refuses to install without zsh (fresh Ubuntu/WSL).
+    command -v zsh &> /dev/null || add_brew_dep zsh
+
     # OMZ Plugins
     confirm_feature "AUTOSUGGEST" "Zsh Autosuggestions" && SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS zsh-autosuggestions"
     confirm_feature "HIGHLIGHT" "Zsh Syntax Highlighting" && SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS zsh-syntax-highlighting"
