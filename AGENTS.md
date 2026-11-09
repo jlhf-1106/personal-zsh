@@ -45,6 +45,7 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 - **Rule**: Never modify `~/.zshrc` directly; add/edit files in `config/`.
 - **Rule**: Each tool or logical set **MUST** have its own `.zsh` file, unless the OMZ plugin covers it completely (e.g. Azure, Angular, Extract use only their OMZ plugin).
 - **Rule**: Do not add a `.zsh` file for something an enabled OMZ plugin already does (completion, aliases, functions). Never run slow commands (e.g. `ng completion script`, `docker ...`) at shell startup.
+- **Locale**: `exports.zsh` only sets `LANG=en_US.UTF-8` when `LANG` is unset and `locale -a` lists it.
 
 ## Development Conventions
 

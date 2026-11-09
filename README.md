@@ -8,6 +8,7 @@ This repository contains a portable, modular Zsh configuration based on **Oh My 
 - **Homebrew Integration**: Automatically installs missing CLI tools using Homebrew for a seamless setup.
 - **Modular Structure**: Configuration is split into specialized subdirectories. Only the configurations for selected features are deployed.
 - **Dynamic Plugin Management**: Automatically generates the Oh My Zsh plugin list based on your preferences.
+- **Locale**: `LANG` is only set to `en_US.UTF-8` when it is unset and that locale exists (`locale -a`), so minimal Linux/WSL shows no locale warnings.
 - **Starship Prompt**: Fast, asynchronous [Starship](https://starship.rs) prompt featuring the powerline-style **Gruvbox Rainbow** preset with contextual segments for OS, directory, Git status, language runtimes, containers, and timestamps.
 - **Java Management**: Integrated [SDKMAN!](https://sdkman.io/) with automatic version switching.
 - **Angular CLI**: Tab completion comes from the Oh My Zsh `ng` plugin, which only calls `ng` when you press Tab (no startup cost).
