@@ -4,11 +4,14 @@ check_brew() {
     if ! command -v brew &> /dev/null; then
         echo "🍺 Homebrew not found. Attempting to install..."
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        if [ "$IS_MACOS" = true ]; then
-            eval "$(/opt/homebrew/bin/brew shellenv)"
-        else
-            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-        fi
+        # Apple Silicon, Intel Mac, Linux: the locations config/plugins/brew.zsh checks.
+        local brew_bin
+        for brew_bin in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+            if [ -x "$brew_bin" ]; then
+                eval "$("$brew_bin" shellenv)"
+                break
+            fi
+        done
     fi
 }
 
