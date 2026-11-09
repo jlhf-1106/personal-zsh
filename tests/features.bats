@@ -102,6 +102,33 @@ setup() {
 }
 
 
+@test "select_features with DOCKER on Linux should not install the daemon-less brew CLI" {
+    for f in AUTOSUGGEST HIGHLIGHT GH FNM PNPM BUN DOCKER DOCKER_COMPOSE SDKMAN MAVEN AWS AZURE NG GOLANG FZF EXTRACT WD GIT_LFS; do
+        export "ENABLE_$f=false"
+    done
+    mock_command "git" "mock git"
+    export ENABLE_DOCKER=true IS_LINUX=true IS_MACOS=false
+    SUMMARY_FAILED=()
+    # Hide any real docker so the warning path runs.
+    command() { [[ "$1 $2" == "-v docker" ]] && return 1; builtin command "$@"; }
+
+    select_features > /dev/null || true
+    [[ " $BREW_DEPS " != *" docker "* ]]
+    [[ " $SELECTED_CONFIG_FILES " == *" docker.zsh "* ]]
+    [[ "${SUMMARY_FAILED[*]}" == *"Docker Engine"* ]]
+}
+
+@test "select_features with DOCKER on macOS should install docker with Homebrew" {
+    for f in AUTOSUGGEST HIGHLIGHT GH FNM PNPM BUN DOCKER DOCKER_COMPOSE SDKMAN MAVEN AWS AZURE NG GOLANG FZF EXTRACT WD GIT_LFS; do
+        export "ENABLE_$f=false"
+    done
+    mock_command "git" "mock git"
+    export ENABLE_DOCKER=true IS_LINUX=false IS_MACOS=true
+
+    select_features > /dev/null || true
+    [[ " $BREW_DEPS " == *" docker "* ]]
+}
+
 @test "select_features with AWS should add fzf once (awsp needs it)" {
     for f in AUTOSUGGEST HIGHLIGHT GH FNM PNPM BUN DOCKER DOCKER_COMPOSE SDKMAN MAVEN AZURE NG GOLANG EXTRACT WD GIT_LFS; do
         export "ENABLE_$f=false"

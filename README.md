@@ -19,7 +19,7 @@ Some features pull in another tool automatically:
 
 - **AWS CLI**: Also installs `fzf`, used by the `awsp` profile picker.
 - **Angular CLI**: Installed globally with `pnpm`. If pnpm is not selected or installed, the installer adds it.
-- **Docker**: When Docker is selected (or already installed), the installer also offers `Docker Compose`.
+- **Docker**: When Docker is selected (or already installed), the installer also offers `Docker Compose`. On macOS it installs the Homebrew `docker` CLI (you still need Docker Desktop or Colima for the daemon). On Linux it does **not** install Docker: Homebrew only ships the CLI, so install [Docker Engine](https://docs.docker.com/engine/install/) from your distro packages (the summary flags it if missing).
 
 ## Java & SDKMAN!
 

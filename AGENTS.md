@@ -41,6 +41,7 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
     - **`config/core/`**: Essential system configurations (always installed).
     - **`config/plugins/`**: Functional modules.
 - **Selective Deployment**: `install.sh` copies files to `~/.zsh_config/` **selectively** based on the enabled features in `.zsh_plugins.env`. A rerun replaces the `*.zsh` files but never deletes `~/.zsh_config/backups/`.
+- **Docker**: on Linux the feature deploys the plugin/config but never brew-installs `docker` (CLI only, no daemon); a missing Docker Engine is flagged in the summary.
 - **Dynamic Plugins**: `zshrc.template` contains a `_DYNAMIC_PLUGINS_` placeholder that is replaced during installation with the list of Oh My Zsh plugins corresponding to the selected features.
 - **Rule**: Never modify `~/.zshrc` directly; add/edit files in `config/`.
 - **Rule**: Each tool or logical set **MUST** have its own `.zsh` file, unless the OMZ plugin covers it completely (e.g. Azure, Angular, Extract use only their OMZ plugin).
