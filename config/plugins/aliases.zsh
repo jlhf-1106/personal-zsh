@@ -15,5 +15,5 @@ alias la="ls -A"
 alias l="ls -CF"
 
 # Misc
-alias zshconfig="nvim ~/.zshrc"
+alias zshconfig='$EDITOR ~/.zshrc'
 alias reload="source ~/.zshrc"
