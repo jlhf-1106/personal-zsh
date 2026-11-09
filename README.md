@@ -39,7 +39,7 @@ This configuration includes a dedicated module for managing Java versions via SD
 
 1. Clone this repository to your preferred location:
    ```bash
-   git clone https://github.com/your-username/personal-zsh.git ~/personal-zsh
+   git clone https://github.com/jlhf-1106/personal-zsh.git ~/personal-zsh
    ```
 
 2. Run the installation script:
