@@ -6,20 +6,12 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 - **Purpose**: Portable, modular Zsh configuration for Linux, macOS, and WSL.
 - **Base**: Oh My Zsh.
 - **Prompt**: Fast, cross-shell [Starship](https://starship.rs) prompt using the **Gruvbox Rainbow** preset (`config/starship.toml` deployed to `~/.config/starship.toml`).
-- **Package Managers & Tools**: 
-    - **SDKMAN!** (`config/sdkman.zsh`): Java version management.
-    - **FNM** (`config/fnm.zsh`): Fast Node Manager.
-    - **Bun** (`config/bun.zsh`): JavaScript runtime and manager.
-    - **Homebrew** (`config/brew.zsh`): Package manager for macOS and Linux.
-    - **Git LFS** (`config/plugins/git-lfs.zsh`): Git Large File Storage configuration and aliases.
-    - **Docker Compose** (`config/plugins/docker-compose.zsh`): `dc` alias; picks `docker-compose` or `docker compose` from `$commands` without running docker.
 
 ## Key Workflows
 
 ### Installation
 - **Entry point**: `install.sh`.
 - **Modular Logic**: The installer is organized into scripts in `scripts/install/`:
-    - `common.sh`: Shared variables and logging.
     - `features.sh`: Interactive feature selection and preference loading. Use `add_brew_dep <formula>` when a feature needs a tool another feature may also add (e.g. AWS and FZF both need `fzf`).
     - `deps.sh`: Installation of Homebrew, OMZ, Starship, and custom plugins. OMZ is installed with `ZSH="$HOME/.oh-my-zsh" KEEP_ZSHRC=yes` so it never touches `.zshrc`.
 - **Guards** (`install.sh`): exits if `ZDOTDIR` is set to anything but `$HOME`; skips `generate_zshrc` when `~/.oh-my-zsh/oh-my-zsh.sh` is missing.
@@ -27,19 +19,9 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 - **Preferences**: Persists preferences in `.zsh_plugins.env` (git-ignored, per machine; never commit it).
 
 ### PATH Migration
-- **Script**: `scripts/migrate_path.sh` — moves explicit, single-line `PATH` definitions from `~/.zshrc` to `~/.zshenv`.
-- **Manual only**: Run it by hand from the repo. It is not run at shell startup: moved lines lose variables defined earlier in `.zshrc` and lose PATH priority (macOS `path_helper` and `brew shellenv` run after `.zshenv`), so the user must review the dry run first.
-- **Rationale**: `.zshenv` is loaded in every zsh session (interactive, non-interactive, cron, launchd, GUI apps), making it the correct place for `PATH`.
-- **Dry-run by default**: Running without flags shows detected lines without modifying anything. Use `--apply` to execute.
-- **Stateful parser**: Tracks `if`/`for`/`while`/`case` block depth and `{ }` brace depth to skip lines inside conditionals and functions.
-- **Portability**: Uses `awk` (not `sed -i`) for line deletion to work on both macOS (BSD) and Linux (GNU).
-- **Symlinks**: Rewrites `~/.zshrc` with `cat > file` (not `mv`) so a symlinked `.zshrc` stays a link.
-- **Test harness**: `tests/migrate_path.bats` validates the script via Bats (41 tests covering dry-run, apply, exclusion rules, backups, idempotency, symlinked `.zshrc`, and edge cases).
+- **Manual only**: `scripts/migrate_path.sh` is run by hand from the repo, never at shell startup: moved lines lose variables defined earlier in `.zshrc` and lose PATH priority (macOS `path_helper` and `brew shellenv` run after `.zshenv`), so the user must review the dry run first. Details: `scripts/AGENTS.md`.
 
 ### Modular Configuration
-- **Structure**: The `config/` directory is organized into subdirectories:
-    - **`config/core/`**: Essential system configurations (always installed).
-    - **`config/plugins/`**: Functional modules.
 - **Selective Deployment**: `install.sh` copies files to `~/.zsh_config/` **selectively** based on the enabled features in `.zsh_plugins.env`. A rerun replaces the `*.zsh` files but never deletes `~/.zsh_config/backups/`.
 - **Dynamic Plugins**: `zshrc.template` contains a `_DYNAMIC_PLUGINS_` placeholder that is replaced during installation with the list of Oh My Zsh plugins corresponding to the selected features.
 - **Rule**: Never modify `~/.zshrc` directly; add/edit files in `config/`.
@@ -49,7 +31,6 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 ## Development Conventions
 
 ### Scripting
-- Use Bash/Zsh compatible syntax.
 - Use `[[ -s "file" ]]` for existence and size checks.
 - For in-place edits in installer scripts use `sed_inplace <expr> <file>` (`common.sh`); never branch on OS for `sed -i`.
 
@@ -80,6 +61,7 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 | --- | --- | --- |
 | `AGENTS.md` | Shared project instructions | Codex, Antigravity, Cursor, GitHub Copilot, Windsurf, Zed, Jules, Amp, Aider, etc. |
 | `CLAUDE.md` | Imports `AGENTS.md` via `@AGENTS.md` (+ Claude-only notes) | Claude Code |
+| `scripts/AGENTS.md`, `scripts/CLAUDE.md` | Details for `scripts/` only (PATH migration); `scripts/CLAUDE.md` imports `@AGENTS.md`, loaded only when working under `scripts/` | All tools / Claude Code |
 | `.gemini/settings.json` | Sets `context.fileName` to `AGENTS.md` | Gemini CLI |
 | `.agents/skills/<name>/SKILL.md` | Shared [Agent Skills](https://agentskills.io) | Antigravity, Codex, Gemini CLI, Cursor, Copilot |
 | `.claude/skills` | Symlink to `../.agents/skills` | Claude Code |
@@ -102,7 +84,3 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
     - `README.md`: To ensure user-facing documentation is current.
     - `AGENTS.md`: To ensure shared context for other agents remains accurate.
 - **Consistency**: Ensure that technical details (aliases, paths, features) are synchronized across all documentation files.
-
-## Maintenance
-- **Reload**: `reload` alias.
-- **Edit**: `zshconfig` alias.
