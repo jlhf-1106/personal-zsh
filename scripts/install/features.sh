@@ -70,6 +70,8 @@ select_features() {
         # The OMZ ng plugin provides lazy completion (runs ng only on Tab).
         SELECTED_OMZ_PLUGINS="$SELECTED_OMZ_PLUGINS ng"
         INSTALL_ANGULAR=true
+        # ng is installed into PNPM_HOME, which pnpm.zsh puts on PATH.
+        [[ " $SELECTED_CONFIG_FILES " == *" pnpm.zsh "* ]] || SELECTED_CONFIG_FILES="$SELECTED_CONFIG_FILES pnpm.zsh"
         
         if [[ "$ENABLE_PNPM" != "true" ]] && ! command -v pnpm &> /dev/null; then
             echo "⚠️  Warning: Angular CLI will be installed globally via pnpm (mandatory for security)."

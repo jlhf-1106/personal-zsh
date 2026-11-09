@@ -67,6 +67,28 @@ setup() {
     assert_output --partial "fzf"
 }
 
+@test "select_features with NG but no PNPM should deploy pnpm.zsh (ng lives in PNPM_HOME)" {
+    for f in AUTOSUGGEST HIGHLIGHT GH FNM PNPM BUN DOCKER DOCKER_COMPOSE SDKMAN MAVEN AWS AZURE NG GOLANG FZF EXTRACT WD GIT_LFS; do
+        export "ENABLE_$f=false"
+    done
+    mock_command "git" "mock git"
+    export ENABLE_NG=true
+
+    select_features > /dev/null || true
+    [[ " $SELECTED_CONFIG_FILES " == *" pnpm.zsh "* ]]
+}
+
+@test "select_features with NG and PNPM should deploy pnpm.zsh once" {
+    for f in AUTOSUGGEST HIGHLIGHT GH FNM PNPM BUN DOCKER DOCKER_COMPOSE SDKMAN MAVEN AWS AZURE NG GOLANG FZF EXTRACT WD GIT_LFS; do
+        export "ENABLE_$f=false"
+    done
+    mock_command "git" "mock git"
+    export ENABLE_NG=true ENABLE_PNPM=true
+
+    select_features > /dev/null || true
+    [ "$(tr ' ' '\n' <<< "$SELECTED_CONFIG_FILES" | grep -cx pnpm.zsh)" -eq 1 ]
+}
+
 @test "select_features with GIT_LFS enabled should add git-lfs to BREW_DEPS and git-lfs.zsh to SELECTED_CONFIG_FILES" {
     export ENABLE_AUTOSUGGEST=false
     export ENABLE_HIGHLIGHT=false
