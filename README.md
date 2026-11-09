@@ -55,6 +55,8 @@ This configuration includes a dedicated module for managing Java versions via SD
 
    *Note: The script may prompt for your password to install Homebrew or system dependencies via `sudo`.*
 
+   *Note: If `zsh` is missing (fresh Ubuntu/WSL), it is installed with Homebrew. If zsh is not your login shell, the installer asks once (saved as `ENABLE_CHSH`) and runs `chsh -s "$(command -v zsh)"`, adding it to `/etc/shells` first if needed.*
+
    **macOS users**: The installer automatically handles these macOS-specific requirements:
    - Installs **Homebrew** (if missing) and **Homebrew's Bash 4+** (needed by SDKMAN!, since macOS ships with Bash 3.2).
    - Installs **Node.js LTS** via fnm (if fnm is selected and no Node version is active).

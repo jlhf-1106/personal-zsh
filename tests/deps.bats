@@ -111,3 +111,34 @@ setup() {
     assert_output --partial "CHECK_BREW_CALLED"
     rm -rf "$HOME"
 }
+
+@test "set_default_shell should do nothing when zsh is already the login shell" {
+    source "$REPO_DIR/scripts/install/features.sh"
+    export SHELL=/bin/zsh
+    mock_command "zsh" ""
+    mock_command "chsh" "CHSH_CALLED"
+
+    run set_default_shell
+    refute_output --partial "CHSH_CALLED"
+}
+
+@test "set_default_shell should run chsh when the user accepts" {
+    source "$REPO_DIR/scripts/install/features.sh"
+    export SHELL=/bin/bash ENABLE_CHSH=true
+    mock_command "zsh" ""
+    mock_command "sudo" ""
+    mock_command "chsh" "CHSH_CALLED"
+
+    run set_default_shell
+    assert_output --partial "CHSH_CALLED"
+}
+
+@test "set_default_shell should skip chsh when the user declined" {
+    source "$REPO_DIR/scripts/install/features.sh"
+    export SHELL=/bin/bash ENABLE_CHSH=false
+    mock_command "zsh" ""
+    mock_command "chsh" "CHSH_CALLED"
+
+    run set_default_shell
+    refute_output --partial "CHSH_CALLED"
+}

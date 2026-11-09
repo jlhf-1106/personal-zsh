@@ -56,6 +56,7 @@ else
     fi
     setup_local_config
     install_fonts
+    set_default_shell
 fi
 
 # 5. Summary

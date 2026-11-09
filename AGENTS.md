@@ -11,6 +11,7 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 
 ### Installation
 - **Entry point**: `install.sh`.
+- **Zsh itself**: `select_features` adds `zsh` to the Homebrew deps when missing; `set_default_shell` (`deps.sh`, last install step) asks once (`ENABLE_CHSH`) and runs `chsh` when zsh is not the login shell (OMZ runs `--unattended`, which skips it).
 - **Modular Logic**: The installer is organized into scripts in `scripts/install/`:
     - `features.sh`: Interactive feature selection and preference loading. Use `add_brew_dep <formula>` when a feature needs a tool another feature may also add (e.g. AWS and FZF both need `fzf`).
     - `deps.sh`: Installation of Homebrew, OMZ, Starship, and custom plugins. OMZ is installed with `ZSH="$HOME/.oh-my-zsh" KEEP_ZSHRC=yes` so it never touches `.zshrc`.

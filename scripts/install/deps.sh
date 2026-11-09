@@ -48,6 +48,24 @@ install_omz() {
     fi
 }
 
+set_default_shell() {
+    local zsh_bin
+    zsh_bin="$(command -v zsh)" || return
+    [ "$(basename "$SHELL")" = zsh ] && return
+    # Asked here, not in select_features: only matters when zsh is not the login shell.
+    confirm_feature "CHSH" "zsh as your default shell" || return
+
+    # chsh only accepts shells listed in /etc/shells (Homebrew's zsh is not).
+    if ! grep -qx "$zsh_bin" /etc/shells 2>/dev/null; then
+        echo "$zsh_bin" | sudo tee -a /etc/shells > /dev/null
+    fi
+    if chsh -s "$zsh_bin"; then
+        SUMMARY_SUCCESS+=("Default shell: $zsh_bin (log out and back in)")
+    else
+        SUMMARY_FAILED+=("Default shell (run: chsh -s $zsh_bin)")
+    fi
+}
+
 _clone_plugin() {
     local plugin="$1"
     local url="$2"

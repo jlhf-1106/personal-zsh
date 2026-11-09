@@ -117,3 +117,14 @@ setup() {
     select_features > /dev/null || true
     [[ " $BREW_DEPS " == *" fzf "* ]]
 }
+
+@test "select_features should add zsh to BREW_DEPS when zsh is missing" {
+    for f in AUTOSUGGEST HIGHLIGHT GH FNM PNPM BUN DOCKER DOCKER_COMPOSE SDKMAN MAVEN AWS AZURE NG GOLANG FZF EXTRACT WD GIT_LFS; do
+        export "ENABLE_$f=false"
+    done
+    mock_command "git" "mock git"
+    command() { [[ "$1 $2" == "-v zsh" ]] && return 1; builtin command "$@"; }
+
+    select_features > /dev/null || true
+    [[ " $BREW_DEPS " == *" zsh "* ]]
+}
