@@ -14,7 +14,7 @@ This file provides core context and guidelines for AI agents (Gemini, Claude, et
 - **Zsh itself**: `select_features` adds `zsh` to the Homebrew deps when missing; `set_default_shell` (`deps.sh`, last install step) asks once (`ENABLE_CHSH`) and runs `chsh` when zsh is not the login shell (OMZ runs `--unattended`, which skips it).
 - **Modular Logic**: The installer is organized into scripts in `scripts/install/`:
     - `features.sh`: Interactive feature selection and preference loading. Use `add_brew_dep <formula>` when a feature needs a tool another feature may also add (e.g. AWS and FZF both need `fzf`).
-    - `deps.sh`: Installation of Homebrew, OMZ, Starship, and custom plugins. OMZ is installed with `ZSH="$HOME/.oh-my-zsh" KEEP_ZSHRC=yes` so it never touches `.zshrc`.
+    - `deps.sh`: Installation of Homebrew, OMZ, Starship, and custom plugins. OMZ is installed with `ZSH="$HOME/.oh-my-zsh" KEEP_ZSHRC=yes` so it never touches `.zshrc`. `check_brew` looks for a fresh `brew` in `/opt/homebrew`, `/usr/local` and `/home/linuxbrew/.linuxbrew`.
 - **Guards** (`install.sh`): exits if `ZDOTDIR` is set to anything but `$HOME`; skips `generate_zshrc` when `~/.oh-my-zsh/oh-my-zsh.sh` is missing.
     - `config.sh`: Deployment of Starship configuration, modular configs, and fonts. `generate_zshrc` always moves the old `~/.zshrc` (file or symlink) to `~/.zsh_config/backups/` first.
 - **Preferences**: Persists preferences in `.zsh_plugins.env` (git-ignored, per machine; never commit it).
