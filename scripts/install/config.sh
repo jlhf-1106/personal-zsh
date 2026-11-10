@@ -4,6 +4,11 @@ setup_starship() {
     echo "🚀 Setting up Starship prompt configuration..."
     local STARSHIP_CONFIG_DIR="$HOME/.config"
     mkdir -p "$STARSHIP_CONFIG_DIR"
+    # Keep the user's own config, like generate_zshrc does with ~/.zshrc.
+    if [ -e "$STARSHIP_CONFIG_DIR/starship.toml" ] && ! cmp -s "$REPO_DIR/config/starship.toml" "$STARSHIP_CONFIG_DIR/starship.toml"; then
+        mkdir -p "$CONFIG_DEST/backups"
+        mv "$STARSHIP_CONFIG_DIR/starship.toml" "$CONFIG_DEST/backups/starship.toml.bak.$(date +%Y%m%d_%H%M%S)"
+    fi
     if cp "$REPO_DIR/config/starship.toml" "$STARSHIP_CONFIG_DIR/starship.toml"; then
         SUMMARY_SUCCESS+=("Starship Config (Gruvbox Rainbow)")
     else
